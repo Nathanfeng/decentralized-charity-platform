@@ -9,7 +9,7 @@ The charity raises a fund and sets a series of milestones that they promise to a
 ## User Roles:
 
 ### Fund Manager:
-The fund manager is the creator of the fund. The fund manager has the following permissions:
+The fund manager is the creator of the fund. The fund manager has the following permissions:  
 **Add a milestone to the fund:**  
 **Deploy the fund:**  to open it up for donations,
 **Activate the fund:**  
