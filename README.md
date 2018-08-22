@@ -10,15 +10,15 @@ The charity raises a fund and sets a series of milestones that they promise to a
 
 ### Fund Manager:
 The fund manager is the creator of the fund. The fund manager has the following permissions:
-**Add a milestone to the fund:**
-**Deploy the fund:** to open it up for donations,
-**Activate the fund:**
-**Move to next milestone:**
+**Add a milestone to the fund:**  
+**Deploy the fund:**  to open it up for donations,
+**Activate the fund:**  
+**Move to next milestone:**  
 
 ### Donor:
 The donor is a contributor to the fund. A donor has the following permissions:
-**Donate to the fund:**
-**Claim funds:**
+**Donate to the fund:**  
+**Claim funds:**  
 
 ## Technical Details
 
@@ -117,11 +117,6 @@ yarn build
 A minified bundle `build_webpack` will be created. Simply serve this folder.
 
 
-## Feature and Issue Tracking
-
-All user stories (features) and issues are tracked and managed in this [Trello Board](https://trello.com/b/7UhQQrn0).
-
-
 ## Notes
 
 ### Account Switching with MetaMask
@@ -132,8 +127,6 @@ The User Interface does not refresh automatically when you switch between accoun
 
 It takes a while to get a response from the network, hence the user interface feedback might be slow. Please be patient and wait for the network to response.
 
-### EthPM Packages
-Packages in EthPM are outdated. Zeppelin is added to this codebase via EthPM due to specific requirements. It is advised to add this dependency module through Yarn instead.
 
 
 
