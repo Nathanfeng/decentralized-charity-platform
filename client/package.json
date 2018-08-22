@@ -6,8 +6,7 @@
   "scripts": {
     "dev": "node server.js",
     "build": "next build",
-    /* "start": "next start", */
-    "start": "node ./server.js"
+    "start": "next start",
     "link-contracts": "cd lib && ln -s ../../build/contracts contracts"
   },
   "dependencies": {

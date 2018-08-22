@@ -2,16 +2,16 @@ const Factory = artifacts.require("./contracts/FundFactory.sol");
 const Fund = artifacts.require("./contracts/Fund.sol");
 
 contract('Fund', (accounts) => {
-    let owner = accounts[2];
-    let firstDonor = accounts[3];
-    let secondDonor = accounts[4];
+    let owner = accounts[3];
+    let firstDonor = accounts[4];
+    let secondDonor = accounts[5];
     let fund;
     let factory;
 
     beforeEach(async () => {
       factory = await Factory.new({from:owner})
-      await factory.initiateFund("test", "test fund", 100, 2, {from: owner});
-      fund = await Fund.new("test2", "second test", 100, 2, {from:owner});
+      await factory.initiateFund("test", "test fund", 20, 2, {from: owner});
+      fund = await Fund.new("test2", "second test", 20, 2, {from:owner});
       // const addedMilestone = {title: "first", description: "first milestone"};
       await fund.addMilestone("first", "first milestone", {from: owner});
       // await fund.addMilestone(addedMilestone.title, addedMilestone.description, {from: owner});
@@ -87,19 +87,153 @@ contract('Fund', (accounts) => {
       });
 
       it('should not accept donations twice from same address ', async () => {
+        try {
+          await fund.makeDonation({from: firstDonor, value: 40});
+          await fund.makeDonation({from: firstDonor, value: 30});
 
-        // newFund = await Fund.new("test3", "third test", 100, 3, {from:owner});
+          assert(false);
+        } catch (err) {
+          assert(err);
+        }
 
       });
+
       it('should not allow the owner to make a donation', async () => {
+        try {
+          await fund.makeDonation({from: firstDonor, value: 40});
 
-        // newFund = await Fund.new("test3", "third test", 100, 3, {from:owner});
-
+          assert(false);
+        } catch (err) {
+          assert(err);
+        }
       });
-
-
 
     })
+
+    describe("activate fund", () => {
+
+      it('should should open fund up to donations when activated', async () => {
+        const deployCall = await fund.deployFund({from: owner})
+        await fund.makeDonation({from: firstDonor, value: 40});
+        await fund.makeDonation({from: secondDonor, value: 40});
+        acceptingDonations = await fund.acceptingDonations.call();
+        assert(acceptingDonations);
+
+        try {
+          await fund.activateFund({from: owner});
+
+          assert(false);
+        } catch (err) {
+          assert(err);
+        }
+
+      });
+
+      it('should prevent activation if not enough people donated', async () => {
+        try {
+          const deployCall = await fund.deployFund({from: owner})
+          await fund.makeDonation({from: firstDonor, value: 40});
+          await fund.activateFund({from: owner});
+
+          assert(false);
+        } catch (err) {
+          assert(err);
+        }
+      });
+
+      it('should prevent activation if if not enough was donated', async () => {
+        try {
+          const deployCall = await fund.deployFund({from: owner})
+          await fund.makeDonation({from: firstDonor, value: 10});
+          await fund.makeDonation({from: secondDonor, value: 5});
+          await fund.activateFund({from: owner});
+
+          assert(false);
+        } catch (err) {
+          assert(err);
+        }
+      });
+
+    })
+    //not done
+    describe("voting", () => {
+
+      it('should prevent the owner from voting', async () => {
+        try {
+          const deployCall = await fund.deployFund({from: owner})
+          await fund.makeDonation({from: firstDonor, value: 10});
+          await fund.makeDonation({from: secondDonor, value: 5});
+          await fund.activateFund({from: owner});
+
+          assert(false);
+        } catch (err) {
+          assert(err);
+        }
+      });
+
+      it('should prevent the owner from voting', async () => {
+        try {
+          const deployCall = await fund.deployFund({from: owner})
+          await fund.makeDonation({from: firstDonor, value: 10});
+          await fund.makeDonation({from: secondDonor, value: 5});
+          await fund.activateFund({from: owner});
+
+          assert(false);
+        } catch (err) {
+          assert(err);
+        }
+      });
+
+      it('allows only those who have donated to vote', async () => {
+        try {
+          const deployCall = await fund.deployFund({from: owner})
+          await fund.makeDonation({from: firstDonor, value: 10});
+          await fund.makeDonation({from: secondDonor, value: 5});
+          await fund.activateFund({from: owner});
+
+          assert(false);
+        } catch (err) {
+          assert(err);
+        }
+      });
+
+      it('should make sure addresses cant vote twice', async () => {
+        try {
+          const deployCall = await fund.deployFund({from: owner})
+          await fund.makeDonation({from: firstDonor, value: 10});
+          await fund.makeDonation({from: secondDonor, value: 5});
+          await fund.activateFund({from: owner});
+
+          assert(false);
+        } catch (err) {
+          assert(err);
+        }
+      });
+
+      it('should weight votes based on how much was donated', async () => {
+        try {
+          const deployCall = await fund.deployFund({from: owner})
+          await fund.makeDonation({from: firstDonor, value: 10});
+          await fund.makeDonation({from: secondDonor, value: 5});
+          await fund.activateFund({from: owner});
+
+          assert(false);
+        } catch (err) {
+          assert(err);
+        }
+      });
+
+    })
+
+    describe("nextMilestone", () => {
+
+
+    )}
+
+    describe("claim funds", () => {
+
+
+    )}
 
 
 
