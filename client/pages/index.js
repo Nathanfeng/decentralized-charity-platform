@@ -7,6 +7,7 @@ import Web3Container from '../lib/Web3Container';
 
 class FundIndex extends Component {
   static async getInitialProps() {
+
   const {accounts, fundFactoryContract} = this.props;
   const funds = await fundFactoryContract.methods.getInitiatedFunds().call({from: accounts[0]});
 
@@ -14,7 +15,6 @@ class FundIndex extends Component {
   }
 
   renderDeployedFunds() {
-
 
     const items = this.props.funds.map(address => {
     // const items = funds.map(address => {
@@ -35,6 +35,8 @@ class FundIndex extends Component {
 
 
   render() {
+    console.log('test');
+
     return (
       <Layout>
         <h2>What Does the Platform Do?</h2>

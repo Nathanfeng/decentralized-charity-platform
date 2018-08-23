@@ -13,6 +13,7 @@ class NewMilestone extends Component {
     loading: false
   };
 
+
   onAdd = async (event) => {
     event.preventDefault();
 
@@ -23,9 +24,8 @@ class NewMilestone extends Component {
     try {
       const {accounts, fundContract} = this.props;
       await fundContract.methods
-        // .addMilestone.call();
-        .addMilestone(title, description, {from: accounts[0]});
-        // .send({ from: accounts[0] });
+        .addMilestone.call()
+        .send({ from: accounts[0] });
 
       Router.pushRoute("/show");
     } catch (err) {

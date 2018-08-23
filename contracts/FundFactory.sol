@@ -15,12 +15,15 @@ contract FundFactory is Ownable, Pausable {
 	address[] public initiatedFunds;
 	mapping (address => string) public fundTitle;
 
-	function initiateFund(string title, string description, uint targetAmount, uint minNumberDonators) public {
+	function initiateFund(string title, string description, uint targetAmount, uint minNumberDonators) public returns(address){
 			address newFund = new Fund(title, description, targetAmount, minNumberDonators);
 			initiatedFunds.push(newFund);
+			return (address)newFund;
 	}
 
 	function getInitiatedFunds() public view returns (address[]) {
 			return initiatedFunds;
 	}
+
+	function get
 }
