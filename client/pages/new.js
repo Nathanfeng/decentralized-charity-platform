@@ -7,10 +7,10 @@ import Web3Container from '../lib/Web3Container';
 
 class FundNew extends Component {
   state = {
-    title: "",
-    description: "",
-    targetAmount: "",
-    minNumberDonators: "",
+    name: "",
+    descrip: "",
+    target: "",
+    minDonors: "",
     errorMessage: "",
     loading: false
   };
@@ -18,15 +18,15 @@ class FundNew extends Component {
   onSubmit = async (event) => {
     event.preventDefault();
     this.setState({ loading: true, errorMessage: ""});
-    const {title, description, targetAmount, minNumberDonators} = this.state;
+    const {name, descrip, target, minDonors} = this.state;
 
     try {
-    const {accounts, fundFactoryContract} = this.props;
-    await fundFactoryContract.methods.initiateFund(
-      title,
-      description,
-      targetAmount,
-      minNumberDonators
+    const {accounts, fundContract} = this.props;
+    await fundContract.methods.initializeFund(
+      name,
+      descrip,
+      target,
+      minDonors
     )
       .send({
         from:accounts[0]
@@ -93,11 +93,11 @@ class FundNew extends Component {
 export default () => (
   <Web3Container
     renderLoading={() => <div>Loading Page...</div>}
-    render={({ web3, accounts, fundFactoryContract }) => (
+    render={({ web3, accounts, fundContract }) => (
       <FundNew
         web3={web3}
         accounts={accounts}
-        fundFactoryContract={fundFactoryContract}
+        fundContract={fundContract}
       />
     )}
   />

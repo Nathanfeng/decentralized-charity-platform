@@ -9,35 +9,35 @@ class NewMilestone extends Component {
   state = {
     title: "",
     description: "",
-    errorMessage: "",
-    loading: false
+    addErrorMessage: "",
+    deployErrorMessage: "",
+    addLoading: false,
+    deployLoading: false
   };
 
 
   onAdd = async (event) => {
     event.preventDefault();
-
+    this.setState({ addLoading: true, errorMessage: ""})
     const {title, description} = this.state;
-
-    this.setState({ loading: true, errorMessage: ""})
 
     try {
       const {accounts, fundContract} = this.props;
       await fundContract.methods
-        .addMilestone.call()
+        .addMilestone(title, description)
         .send({ from: accounts[0] });
 
-      Router.pushRoute("/show");
+      Router.pushRoute("/milestones");
     } catch (err) {
-      this.setState({ errorMessage: err.message });
+      this.setState({ addErrorMessage: err.message });
     }
 
-    this.setState({ loading: false });
+    this.setState({ addLoading: false });
   };
 
   onDeploy = async (event) => {
     event.preventDefault();
-    this.setState({ loading: true, errorMessage: ""})
+    this.setState({ deployLoading: true, errorMessage: ""})
 
     try {
       const {accounts, fundContract} = this.props;
@@ -45,12 +45,12 @@ class NewMilestone extends Component {
         .deployFund()
         .send({ from: accounts[0]});
 
-      Router.pushRoute("/");
+      Router.pushRoute("/show");
     } catch (err) {
       this.setState({ errorMessage: err.message });
     }
 
-    this.setState({ loading: false });
+    this.setState({ deployLoading: false });
   };
 
   renderRows = async (event) => {
@@ -118,12 +118,7 @@ class NewMilestone extends Component {
         </p>
 
         <Form onSubmit={this.onDeploy} error={!!this.state.errorMessage}>
-          <button
-            className="ui button"
-            style = {{ marginTop: '20px'}}
-          >
-            Deploy Fund!
-          </button>
+          <Button loading ={this.state.loading} primary>Deploy Fund!</Button>
         </Form>
       </Layout>
     );

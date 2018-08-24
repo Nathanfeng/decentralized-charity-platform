@@ -1,7 +1,6 @@
 import React from 'react'
 import getWeb3 from './getWeb3'
 import getContract from './getContract'
-import FundFactory from './contracts/FundFactory.json'
 import Fund from './contracts/Fund.json'
 
 export default class Web3Container extends React.Component {
@@ -9,18 +8,17 @@ export default class Web3Container extends React.Component {
     web3: null,
     accounts: null,
     fundContract: null,
-    fundFactoryContract: null
   };
 
   async componentDidMount () {
     try {
       const web3 = await getWeb3()
       const accounts = await web3.eth.getAccounts()
-      const fundFactoryContract = await getContract(web3, FundFactory)
-      // const fundContract = await getContract(web3, Fund)
+      const fundContract = await getContract(web3, Fund)
+      console.log(fundContract);
 
 
-      this.setState({ web3, accounts, fundFactoryContract })
+      this.setState({ web3, accounts, fundContract })
     } catch (error) {
       alert(
         `Failed to load web3, accounts, or contract. Check console for details.`
@@ -30,9 +28,9 @@ export default class Web3Container extends React.Component {
   }
 
   render () {
-    const { web3, accounts, fundContract, fundFactoryContract } = this.state
+    const { web3, accounts, fundContract } = this.state
     return web3 && accounts
-      ? this.props.render({ web3, accounts, fundContract, fundFactoryContract })
+      ? this.props.render({ web3, accounts, fundContract })
       : this.props.renderLoading()
   }
 }

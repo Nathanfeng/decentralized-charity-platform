@@ -30,13 +30,13 @@ contract Fund is Ownable, Pausable {
 	uint public minNumberDonators;
 	uint public totalDonors;
 	uint public totalDonated;
-	uint public currentMilestoneIndex;
+	uint public currentMilestoneIndex = 0;
 	mapping (address => uint) public amountDonated;
 	mapping (address => bool) public donated;
 	Milestones[] public milestones;
 
 	//events
-	event FundInitialized(address owner, string title, string description, uint targetAmount, uint minNumberDonators);
+	event FundCreated(address owner, string title, string description, uint targetAmount, uint minNumberDonators);
 	event MilestoneAdded(string name, string description);
 	event FundDeployed(address owner, string title, string description);
 	event DonationReceived(address fundAddress, address donorAddress, uint amount);
@@ -45,10 +45,21 @@ contract Fund is Ownable, Pausable {
 	event NextMilestone(address fundAddress, uint milestoneIndex);
 	event FundsClaimed(address fundAddress, address retreiver);
 
-	constructor() public {
+
+	constructor(
+		string title,
+		string description,
+		uint targetAmount,
+		uint minNumberDonators
+		) public {
+		owner = msg.sender;
+		title = title;
+		description = description;
+		targetAmount = targetAmount;
+		minNumberDonators = minNumberDonators;
 		totalDonated = 0;
-		totalDonors = 0;
-		currentMilestoneIndex = 0;
+		fundInitialized = true;
+		emit FundCreated(msg.sender, title, description, targetAmount, minNumberDonators);
 	}
 
 	modifier restrictOwner {
@@ -79,26 +90,6 @@ contract Fund is Ownable, Pausable {
 		_;
 	}
 
-	function initializeFund(
-		string name,
-		string descrip,
-		uint target,
-		uint minDonors
-		)
-		public
-		onlyOwner
-		whenNotPaused
-		{
-		require(!fundInitialized);
-		owner = msg.sender;
-		title = name;
-		description = descrip;
-		targetAmount = target;
-		minNumberDonators = minDonors;
-		fundInitialized = true;
-		emit FundInitialized(msg.sender, title, description, targetAmount, minNumberDonators);
-	}
-
 	function fundSummary()
 		public
 		view
@@ -113,11 +104,9 @@ contract Fund is Ownable, Pausable {
 	function addMilestone(string _name, string _description)
 		onlyOwner
 		whenNotPaused
-		notAcceptingDonations
 		public
 	{
 		require(fundInitialized);
-		require(!active);
 
 		Milestones memory newMilestone = Milestones({
 			name: _name,
@@ -176,7 +165,7 @@ contract Fund is Ownable, Pausable {
     require(!donated[msg.sender]);
 		require(acceptingDonations);
 
-    totalDonated = SafeMath.add(totalDonated, msg.value);
+    totalDonated += msg.value;
 		totalDonors++;
     donated[msg.sender] = true;
 		amountDonated[msg.sender] = msg.value;

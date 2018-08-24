@@ -25,5 +25,4 @@ contract FundFactory is Ownable, Pausable {
 			return initiatedFunds;
 	}
 
-	function get
 }

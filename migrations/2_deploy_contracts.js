@@ -1,5 +1,5 @@
-var FundFactory = artifacts.require("FundFactory");
+var Fund = artifacts.require("Fund");
 
 module.exports = function(deployer) {
-  deployer.deploy(FundFactory);
+  deployer.deploy(Fund);
 };
