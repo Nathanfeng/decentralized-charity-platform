@@ -1,4 +1,3 @@
-const Factory = artifacts.require("./contracts/FundFactory.sol");
 const Fund = artifacts.require("./contracts/Fund.sol");
 
 contract('Fund', (accounts) => {
