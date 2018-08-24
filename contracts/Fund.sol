@@ -8,6 +8,8 @@ import "../client/node_modules/openzeppelin-solidity/contracts/math/SafeMath.sol
   weight of each vote, handles the fundraising period and the time period
   in which funds are accepted.
 */
+
+
 contract Fund is Ownable, Pausable {
 
 	struct Milestones {
@@ -41,11 +43,12 @@ contract Fund is Ownable, Pausable {
 	event FundDeployed(address owner, string title, string description);
 	event DonationReceived(address fundAddress, address donorAddress, uint amount);
 	event FundActivated(address fundAddress, string title, string description, uint totalDonated);
-	event VoteRecorded(address fundAddress, address voter, bool approval);
+	event VoteRecorded(address fundAddress, address voter, bool approval, uint donationAmount, uint passingVotes, uint failingVotes);
 	event NextMilestone(address fundAddress, uint milestoneIndex);
-	event FundsClaimed(address fundAddress, address retreiver);
+	event FundsClaimed(address fundAddress, address retreiver, uint refund, uint currentbalance, uint proportionDonated);
 
 	constructor() public {
+	    owner = msg.sender;
 		totalDonated = 0;
 		totalDonors = 0;
 		currentMilestoneIndex = 0;
@@ -63,7 +66,7 @@ contract Fund is Ownable, Pausable {
 
 	/* A milestone is met if:
 		1. More than 50% of donors vote
-		2. The total weight of approval votes is greater than failing votes
+		2. The total weight of approval votes is greater than weight of failing votes
 	*/
 	modifier milestonePassed {
 		Milestones memory currentMilestone = milestones[currentMilestoneIndex];
@@ -90,7 +93,6 @@ contract Fund is Ownable, Pausable {
 		whenNotPaused
 		{
 		require(!fundInitialized);
-		owner = msg.sender;
 		title = name;
 		description = descrip;
 		targetAmount = target;
@@ -192,9 +194,11 @@ contract Fund is Ownable, Pausable {
 		require(acceptingDonations);
 		require(totalDonated >= targetAmount);
 		require(totalDonors >= minNumberDonators);
+		uint split = SafeMath.add(milestones.length, 1);
 
-		uint installment = SafeMath.div(totalDonated, milestones.length);
-    owner.transfer(installment);
+		uint installment = SafeMath.div(totalDonated, split);
+        owner.transfer(installment);
+        milestones[currentMilestoneIndex].acceptingVotes = true;
 		acceptingDonations = false;
 		active = true;
 		emit FundActivated(owner, title, description, totalDonated);
@@ -206,21 +210,24 @@ contract Fund is Ownable, Pausable {
 		notAcceptingDonations
 		public
 	{
-    require(donated[msg.sender]);
-    require(!(milestones[currentMilestoneIndex].voted[msg.sender]));
-    require(active);
+        require(donated[msg.sender]);
+        require(!(milestones[currentMilestoneIndex].voted[msg.sender]));
+        require(milestones[currentMilestoneIndex].acceptingVotes);
+        require(active);
 
-		uint donationProportion = SafeMath.div(amountDonated[msg.sender], totalDonated);
-		uint voteWeight = SafeMath.mul(donationProportion, 100);
+		uint donationAmount = amountDonated[msg.sender];
+		uint passingVotes = milestones[currentMilestoneIndex].passingVotes;
+		uint failingVotes = milestones[currentMilestoneIndex].failingVotes;
 
 		if (vote) {
-			SafeMath.add(milestones[currentMilestoneIndex].passingVotes, voteWeight);
+			milestones[currentMilestoneIndex].passingVotes = SafeMath.add(passingVotes, donationAmount);
+
 		} else {
-			SafeMath.add(milestones[currentMilestoneIndex].failingVotes, voteWeight);
+			milestones[currentMilestoneIndex].failingVotes = SafeMath.add(failingVotes, donationAmount);
 		}
 		milestones[currentMilestoneIndex].totalVoted++;
 		milestones[currentMilestoneIndex].voted[msg.sender] = true;
-		emit VoteRecorded( owner, msg.sender, vote);
+		emit VoteRecorded( owner, msg.sender, vote, donationAmount, passingVotes, failingVotes);
   }
 
 	/* funds are released to the owner if the donors of the fund vote that
@@ -240,12 +247,12 @@ contract Fund is Ownable, Pausable {
 		require(acceptingVotes);
 		require(active);
 		require((address(this).balance) > 0);
-
-		uint installment = SafeMath.div(totalDonated, milestones.length);
+		uint split = SafeMath.add(milestones.length, 1);
+		uint installment = SafeMath.div(totalDonated, split);
 		owner.transfer(installment);
-		acceptingVotes = false;
+		milestones[currentMilestoneIndex].acceptingVotes = false;
 		currentMilestoneIndex++;
-		acceptingVotes = true;
+		milestones[currentMilestoneIndex].acceptingVotes = true;
 		emit NextMilestone( owner, currentMilestoneIndex);
 	}
 
@@ -261,13 +268,17 @@ contract Fund is Ownable, Pausable {
 	{
 		require(donated[msg.sender]);
 		require((address(this).balance) > 0);
-
-		uint donation = amountDonated[msg.sender];
-		uint proportionDonated = SafeMath.div(donation, totalDonated);
+        /*since solidity doesn't account for decimals, we are getting multiplying
+        by 1000 to get the result up to 3 decimal places.
+        */
+		uint adjustedDonation = SafeMath.mul(amountDonated[msg.sender], 1000);
+		uint proportionDonated = SafeMath.div(adjustedDonation, totalDonated);
+		emit FundsClaimed(owner, msg.sender, adjustedDonation, totalDonated, proportionDonated);
 		uint refund = SafeMath.mul(proportionDonated, address(this).balance);
+		//adjusting the refund
+		refund = SafeMath.div(refund, 1000);
 		msg.sender.transfer(refund);
 		milestones[currentMilestoneIndex].acceptingVotes = false;
-		emit FundsClaimed(owner, msg.sender);
 
 	}
 
