@@ -14,16 +14,15 @@ contract('Fund', (accounts) => {
       await fund.addMilestone("first", "first milestone", {from: owner});
       await fund.addMilestone("second", "second milestone", {from: owner});
       await fund.deployFund({from: owner});
-      // await fund.addMilestone(addedMilestone.title, addedMilestone.description, {from: owner});
 
     });
 
     describe("initializing contracts", () => {
-
-      it('deploys both the fund factory and an individual fund', () => {
+      //makes sure that the fund deploys to an address
+      it('deploys an individual fund', () => {
         assert.ok(fund.address);
       });
-
+      //ensures that the owner is set to who instantiates the contract
       it('the address initializing is owner', async () => {
         const deployer = await fund.owner.call();
         assert.equal(owner, deployer);
@@ -32,7 +31,7 @@ contract('Fund', (accounts) => {
 
 
     describe("milestones", () => {
-
+      //only the owner should be able to add a milestone
       it('allows the owner to add a milestone', async () => {
         const totalMilestones = await fund.getMilestonesCount({from: owner});
 
@@ -51,7 +50,7 @@ contract('Fund', (accounts) => {
         }
 
       });
-
+      //there should be 6 properties of the milestone returned in the returnMilestone function
       it('returns 6 properties of a specific milestone', async () => {
         const returnedMilestoneArray = await fund.returnMilestone(0, {from: owner})
 
@@ -67,7 +66,7 @@ contract('Fund', (accounts) => {
     })
 
     describe("deployment", () => {
-
+      //the fund should only be deployed if there is at least 1 milestone
       it('should not deploy if less than 1 milestone added', async () => {
         try {
           newFund = await Fund.new({from: owner});
@@ -80,7 +79,7 @@ contract('Fund', (accounts) => {
         }
       });
 
-      it('should deploy if > 1 milestone added, change acceptingDonations to true', async () => {
+      it('should deploy if >= 1 milestone added, change acceptingDonations to true', async () => {
         newFund = await Fund.new({from: owner});
         const preDeployedStatus = await newFund.acceptingDonations.call();
         await newFund.initializeFund("test3", "third test", 100, 2, {from:owner});
@@ -132,7 +131,11 @@ contract('Fund', (accounts) => {
     })
 
     describe("activate fund", () => {
-
+      /* The fund should only be active if the initial requirements of the fund was met
+       ie. the minimum number of donors and minimum donations met. Once the fund
+       is activated, the first installment should be released to the owner, allowing
+       the owner to work towards their first milestone.
+       */
       it('should should open fund up to voting when activated', async () => {
         await fund.makeDonation({from: firstDonor, value: 60});
         await fund.makeDonation({from: secondDonor, value: 60});
@@ -165,7 +168,8 @@ contract('Fund', (accounts) => {
           assert(err);
         }
       });
-
+      //Since there were two milestones added, there are three installments to
+      //be paid.
       it('should transfer 1/3 total donated from the contract when activated ', async () => {
           await fund.makeDonation({from: firstDonor, value: 40});
           await fund.makeDonation({from: secondDonor, value: 50});
@@ -178,9 +182,9 @@ contract('Fund', (accounts) => {
       });
 
     })
-    //not done
-    describe("voting", () => {
 
+    describe("voting", () => {
+      //Once a fund is active, only the donor should be able to vote on milestones.
       it('should allow donor to vote', async () => {
         await fund.makeDonation({from: firstDonor, value: 10});
         await fund.makeDonation({from: secondDonor, value: 50});
@@ -218,7 +222,7 @@ contract('Fund', (accounts) => {
         }
       });
 
-      it('should make sure addresses can only vote once', async () => {
+      it('should make sure same address can only vote once', async () => {
         try {
           await fund.makeDonation({from: firstDonor, value: 10});
           await fund.makeDonation({from: secondDonor, value: 50});
@@ -236,6 +240,25 @@ contract('Fund', (accounts) => {
 
     describe("nextMilestone", () => {
 
+      /*Votes are weighted based on how much each donor donated. A milestone
+      passes or fails based on majority weight
+      */
+      it('should not trigger next milestone if milestone failed', async () => {
+        try {
+          await fund.makeDonation({from: firstDonor, value: 10});
+          await fund.makeDonation({from: secondDonor, value: 50});
+          await fund.activateFund({from: owner});
+          await fund.recordVote(true, {from: firstDonor});
+          //second donor donated more so had greater weighted vote
+          await fund.recordVote(false, {from: secondDonor});
+          await fund.nextMilestone({from: owner});
+
+          assert(false);
+        } catch (err) {
+          assert(err);
+        }
+      });
+
       it('should not allow donors to trigger next milestone', async () => {
         try {
           await fund.makeDonation({from: firstDonor, value: 10});
@@ -251,6 +274,9 @@ contract('Fund', (accounts) => {
         }
       });
 
+      /*When the next milestone is triggered, the next installment should be
+      paid out to the owner to allow them to work towards the next milestone
+      */
       it('should transfer 1/3 total donated from the contract with nextMilestone ', async () => {
           await fund.makeDonation({from: firstDonor, value: 40});
           await fund.makeDonation({from: secondDonor, value: 50});
@@ -265,7 +291,7 @@ contract('Fund', (accounts) => {
           assert.equal(afterBalance, 30);
       });
 
-      it('should turn off voting for previous milestone and turn on voting for next milestone', async () => {
+      it('should turn off voting for last milestone', async () => {
           await fund.makeDonation({from: firstDonor, value: 10});
           await fund.makeDonation({from: secondDonor, value: 50});
           await fund.activateFund({from: owner});
@@ -281,6 +307,10 @@ contract('Fund', (accounts) => {
     })
 
     describe("claim funds", () => {
+      /*
+      When the milestone fails, donors can retrieve their portions of the
+      remaining donations. Their portion is dependent on how much they donated.
+      */
       it('should not allow owners to trigger claim funds', async () => {
         try {
           await fund.makeDonation({from: firstDonor, value: 10});
@@ -326,14 +356,4 @@ contract('Fund', (accounts) => {
       });
     })
 
-
-
-
 })
-
-/*
-Other tests to write:
-
-
-
-*/
