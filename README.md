@@ -22,17 +22,16 @@ The donor is a contributor to the fund. A donor has the following permissions:
 
 ## Technical Details
 
-This project was built using Next.js, React, Semantic-ui.
+This project was built using [Next.js](https://github.com/zeit/next.js)
+, React, Truffle and [Semantic-UI](https://react.semantic-ui.com/).
 
 ## Pre-requisitions
 
 Node ([https://nodejs.org](https://nodejs.org)) <br>
-Yarn ([https://yarnpkg.com](https://yarnpkg.com)) or NPM<br>
-Truffle (`yarn global add truffle`) <br>
-Ganache-CLI (`yarn global add ganache-cli`) <br>
+Truffle (`npm install -g truffle`) <br>
+Ganache-CLI (`npm install -g ganache-cli`) <br>
 
-Application is built with React and Truffle framework.
-
+This project was created with a boilerplate library integrating React and Next.js and Truffle. More details on the boilerplate can be found [here](https://github.com/adrianmcli/truffle-next).
 
 ## Running the Application in Development
 
@@ -40,8 +39,7 @@ Application is built with React and Truffle framework.
 ```
 ganache-cli
 ```
-The default port number for Ganache is `8545`
-
+The default port number for Ganache is `8545` If you're using the GUI the default port is `7545.`
 
 ### Configure the Application
 
@@ -60,6 +58,7 @@ module.exports = {
 
 
 ### Run Tests for the Contract
+In the root directory run:
 ```
 truffle test
 ```
@@ -82,7 +81,7 @@ In the root directory run:
 truffle migrate
 ```
 ### Sign into MetaMask
-With the mnemonic provided by ganache, sign into MetaMask
+With the mnemonic provided by ganache, sign into MetaMask. Make sure that metamask is connected to the right private network. `HTTP://127.0.0.1:7545` if using ganache GUI.
 
 ### Start the Application
 In the `decentralized-charity-platform/client` folder and run:
@@ -92,26 +91,12 @@ npm run dev
 ```
 Visit http://localhost:3000
 
+### Visiting the pages in the App
+The app has 4 main pages that are listed below:
 
-## Notes
+Home page: http://localhost:3000  
+Setting up fund: http://localhost:3000/new  
+Adding milestones: http://localhost:3000/milestones  
+Managing the fund: http://localhost:3000/show  
 
-### Account Switching with MetaMask
-
-The User Interface does not refresh automatically when you switch between accounts with MetaMask. To maintain display consistency, do refresh the browser every time when you switch an account with MetaMask.
-
-### Slow Network Speed
-
-It takes a while to get a response from the network, hence the user interface feedback might be slow. Please be patient and wait for the network to response.
-
-
-
-
-
-
-
-
-
-
-
-
-The charity then periodically proposes a set of initiatives that the benefactors vote on, with each vote weighted based on the benefactor’s equity in the fund.
+The app should automatically route between the pages depending on the phase in the fund's lifecycle.
