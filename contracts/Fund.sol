@@ -4,11 +4,10 @@ import '../client/node_modules/openzeppelin-solidity/contracts/ownership/Ownable
 import "../client/node_modules/openzeppelin-solidity/contracts/lifecycle/Pausable.sol";
 import "../client/node_modules/openzeppelin-solidity/contracts/math/SafeMath.sol";
 
-/* the Funds contract keeps track of donors, donations, calculates the
-  weight of each vote, handles the fundraising period and the time period
-  in which funds are accepted.
-*/
-
+	/**
+ * @title Fund
+ * @dev Charity app that administers a single fund
+ */
 
 contract Fund is Ownable, Pausable {
 
@@ -35,9 +34,9 @@ contract Fund is Ownable, Pausable {
 	uint public currentMilestoneIndex;
 	mapping (address => uint) public amountDonated;
 	mapping (address => bool) public donated;
+	mapping (address => bool) public claimedFunds;
 	Milestones[] public milestones;
 
-	//events
 	event FundInitialized(address owner, string title, string description, uint targetAmount, uint minNumberDonators);
 	event MilestoneAdded(string name, string description);
 	event FundDeployed(address owner, string title, string description);
@@ -47,12 +46,6 @@ contract Fund is Ownable, Pausable {
 	event NextMilestone(address fundAddress, uint milestoneIndex);
 	event FundsClaimed(address fundAddress, address retreiver, uint refund, uint currentbalance, uint proportionDonated);
 
-	constructor() public {
-	    owner = msg.sender;
-		totalDonated = 0;
-		totalDonors = 0;
-		currentMilestoneIndex = 0;
-	}
 
 	modifier restrictOwner {
 		require(!(msg.sender == owner));
@@ -64,10 +57,13 @@ contract Fund is Ownable, Pausable {
 		_;
 	}
 
-	/* A milestone is met if:
-		1. More than 50% of donors vote
-		2. The total weight of approval votes is greater than weight of failing votes
+	/**
+	* @dev checks that the current milestone is passed.
+	* A milestone is passed if:
+	*1. More than 50% of donors vote
+	*2. The total weight of passing votes is greater than weight of failing votes
 	*/
+
 	modifier milestonePassed {
 		Milestones memory currentMilestone = milestones[currentMilestoneIndex];
 		require(currentMilestone.totalVoted >= SafeMath.div(totalDonors, 2));
@@ -75,12 +71,57 @@ contract Fund is Ownable, Pausable {
 		_;
 	}
 
+	/**
+	* @dev checks that the current milestone is failed.
+	* A milestone is failed if:
+	*1. Less than 50% of donors vote
+	*2. The total weight of failing votes is greater than weight of passing votes
+	*/
+
 	modifier milestoneFailed {
 		Milestones memory currentMilestone = milestones[currentMilestoneIndex];
 		require(currentMilestone.totalVoted >= SafeMath.div(totalDonors, 2));
 		require(currentMilestone.passingVotes < currentMilestone.failingVotes);
 		_;
 	}
+
+	/**
+	* @dev checks that the current milestone is failed.
+	* A milestone is failed if:
+	*1. Less than 50% of donors vote
+	*2. The total weight of failing votes is greater than weight of passing votes
+	*/
+
+	modifier milestonesRemaining {
+		require(currentMilestoneIndex < milestones.length);
+		_;
+	}
+
+	/**
+	 * @dev Sets the starting values of owner, totalDonated, totalDonors
+	 * and currentMilestoneIndex variables
+	 */
+	constructor() public {
+		owner = msg.sender;
+		totalDonated = 0;
+		totalDonors = 0;
+		currentMilestoneIndex = 0;
+	}
+
+	/**
+	* @dev Fallback function
+	*/
+	function() public payable {
+	  revert();
+	}
+
+	/**
+	 * @dev Sets the requirements of the fund
+	 * @param name The name of the fund
+	 * @param descrip The description of the goals of the fund
+	 * @param target The target amount the fund needs to raise to be deployed
+	 * @param minDonors The min number of donors for the fund to be deployed
+	 */
 
 	function initializeFund(
 		string name,
@@ -90,7 +131,6 @@ contract Fund is Ownable, Pausable {
 		)
 		public
 		onlyOwner
-		whenNotPaused
 		{
 		require(!fundInitialized);
 		title = name;
@@ -100,6 +140,17 @@ contract Fund is Ownable, Pausable {
 		fundInitialized = true;
 		emit FundInitialized(msg.sender, title, description, targetAmount, minNumberDonators);
 	}
+
+	/**
+	 * @dev Provides a summary of the current state of the fund
+	 * @return owner The address of the owner.
+	 * @return totalDonors The total number of donors.
+	 * @return minNumberDonators The minimum number of donors for owner to deploy fund.
+	 * @return totalDonated The total amount donated to the fund.
+	 * @return targetAmount The target amount the fund needs to raise to deploy.
+	 * @return acceptingDonations Whether the fund is accepting donations.
+	 * @return active Whether the fund is accepting votes.
+	 */
 
 	function fundSummary()
 		public
@@ -112,9 +163,13 @@ contract Fund is Ownable, Pausable {
 		targetAmount, acceptingDonations, active);
 	}
 
+	/**
+	* @dev Adds a milestone to the fund
+	* @param _name name of the milestone
+	* @param _description description of what is to be achieved in the milestone
+	*/
 	function addMilestone(string _name, string _description)
 		onlyOwner
-		whenNotPaused
 		notAcceptingDonations
 		public
 	{
@@ -134,10 +189,19 @@ contract Fund is Ownable, Pausable {
 		emit MilestoneAdded(_name, _description);
 	}
 
+	/**
+	 * @dev returns the details of the milestone
+	 * @return name The name of milestone
+	 * @return description The description of milestone
+	 * @return passingVotes The number of passing votes
+	 * @return failingVotes The number of failing votes
+	 * @return totalvoted The number of donors who have voted pass or fail
+	 * @return acceptingVotes Whether the milestone is still taking votes
+	 */
+
 	function returnMilestone(uint index)
 		public
 		view
-		whenNotPaused
 		returns (string, string, uint, uint, uint, bool)
 	{
 		require(fundInitialized);
@@ -147,6 +211,11 @@ contract Fund is Ownable, Pausable {
 		milestone.failingVotes, milestone.totalVoted, milestone.acceptingVotes);
 	}
 
+	/**
+	* @dev Gets the total number of milestones added
+	* @return length The number of milestones for the fund
+	*/
+
 	function getMilestonesCount()
 		public
 		view
@@ -155,9 +224,12 @@ contract Fund is Ownable, Pausable {
 		return milestones.length;
 	}
 
+	/**
+	* @dev Deploys fund and opens fund up for donations
+	*/
+
 	function deployFund()
 		onlyOwner
-		whenNotPaused
 		notAcceptingDonations
 		public
 	{
@@ -168,6 +240,10 @@ contract Fund is Ownable, Pausable {
 		emit FundDeployed(msg.sender, title, description);
 
 	}
+
+	/**
+	* @dev Allows a donor to make a donation to the fund
+	*/
 
   function makeDonation()
 		restrictOwner
@@ -185,17 +261,23 @@ contract Fund is Ownable, Pausable {
 		emit DonationReceived(owner, msg.sender, msg.value);
   }
 
+	/**
+	* @dev Closes the fund to donations, releases the first installment to
+	* the owner of the fund, and opens up voting on the first milestone.
+	*/
+
 	function activateFund()
 		onlyOwner
 		whenNotPaused
+		payable
 		public
 	{
 		require(!active);
 		require(acceptingDonations);
 		require(totalDonated >= targetAmount);
 		require(totalDonors >= minNumberDonators);
-		uint split = SafeMath.add(milestones.length, 1);
 
+		uint split = SafeMath.add(milestones.length, 1);
 		uint installment = SafeMath.div(totalDonated, split);
     owner.transfer(installment);
     milestones[currentMilestoneIndex].acceptingVotes = true;
@@ -204,9 +286,15 @@ contract Fund is Ownable, Pausable {
 		emit FundActivated(owner, title, description, totalDonated);
 	}
 
+	/**
+	* @dev Records the vote of the donor. Donors' votes are weighted based on
+	* the proportion of total donations their inidividual donation accounts for.
+	* @param vote Donor's vote of the fund passing or failing the current
+	* milestone. true is Pass, false is Fail.
+	*/
+
   function recordVote(bool vote)
 		restrictOwner
-		whenNotPaused
 		notAcceptingDonations
 		public
 	{
@@ -230,13 +318,16 @@ contract Fund is Ownable, Pausable {
 		emit VoteRecorded( owner, msg.sender, vote, donationAmount, passingVotes, failingVotes);
   }
 
-	/* funds are released to the owner if the donors of the fund vote that
-	the milestone is met. Once the milestone is met, the voting is open for
-	the next milestone.
+	/**
+	* @dev Moves the fund on to the next milestone. When called by the owner,
+	* funds are released to the owner if the donors of the fund vote that
+	* the milestone is met. Once the milestone is met, the voting is open for
+	* the next milestone.
 	*/
 
 	function nextMilestone()
 		notAcceptingDonations
+		milestonesRemaining
 		onlyOwner
 		milestonePassed
 		whenNotPaused
@@ -246,7 +337,7 @@ contract Fund is Ownable, Pausable {
 		bool acceptingVotes = milestones[currentMilestoneIndex].acceptingVotes;
 		require(acceptingVotes);
 		require(active);
-		require((address(this).balance) > 0);
+
 		uint split = SafeMath.add(milestones.length, 1);
 		uint installment = SafeMath.div(totalDonated, split);
 		owner.transfer(installment);
@@ -256,8 +347,10 @@ contract Fund is Ownable, Pausable {
 		emit NextMilestone( owner, currentMilestoneIndex);
 	}
 
-	/* If a milestone failed then donors can claim funds. Once the donors claim
-	funds, votes are no longer accepted for the milestone.
+	/**
+	* @dev Can be called by the donors to claim the remaining funds if a milestone
+	* fails. Once the donors claim funds, votes are no longer accepted for the
+	* milestone.
 	*/
 	function claimFunds()
 		restrictOwner
@@ -267,8 +360,8 @@ contract Fund is Ownable, Pausable {
 		public
 	{
 		require(donated[msg.sender]);
-		require((address(this).balance) > 0);
-    /*since solidity doesn't account for decimals, we are getting multiplying
+		require(!claimedFunds[msg.sender]);
+    /*since solidity doesn't account for decimals, we are multiplying
     by 1000 to get the result up to 3 decimal places.
     */
 		uint adjustedDonation = SafeMath.mul(amountDonated[msg.sender], 1000);
@@ -277,6 +370,7 @@ contract Fund is Ownable, Pausable {
 		uint refund = SafeMath.mul(proportionDonated, address(this).balance);
 		//adjusting the refund
 		refund = SafeMath.div(refund, 1000);
+		claimedFunds[msg.sender]= true;
 		msg.sender.transfer(refund);
 		milestones[currentMilestoneIndex].acceptingVotes = false;
 
