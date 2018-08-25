@@ -197,8 +197,8 @@ contract Fund is Ownable, Pausable {
 		uint split = SafeMath.add(milestones.length, 1);
 
 		uint installment = SafeMath.div(totalDonated, split);
-        owner.transfer(installment);
-        milestones[currentMilestoneIndex].acceptingVotes = true;
+    owner.transfer(installment);
+    milestones[currentMilestoneIndex].acceptingVotes = true;
 		acceptingDonations = false;
 		active = true;
 		emit FundActivated(owner, title, description, totalDonated);
@@ -210,10 +210,10 @@ contract Fund is Ownable, Pausable {
 		notAcceptingDonations
 		public
 	{
-        require(donated[msg.sender]);
-        require(!(milestones[currentMilestoneIndex].voted[msg.sender]));
-        require(milestones[currentMilestoneIndex].acceptingVotes);
-        require(active);
+    require(donated[msg.sender]);
+    require(!(milestones[currentMilestoneIndex].voted[msg.sender]));
+    require(milestones[currentMilestoneIndex].acceptingVotes);
+    require(active);
 
 		uint donationAmount = amountDonated[msg.sender];
 		uint passingVotes = milestones[currentMilestoneIndex].passingVotes;
@@ -268,9 +268,9 @@ contract Fund is Ownable, Pausable {
 	{
 		require(donated[msg.sender]);
 		require((address(this).balance) > 0);
-        /*since solidity doesn't account for decimals, we are getting multiplying
-        by 1000 to get the result up to 3 decimal places.
-        */
+    /*since solidity doesn't account for decimals, we are getting multiplying
+    by 1000 to get the result up to 3 decimal places.
+    */
 		uint adjustedDonation = SafeMath.mul(amountDonated[msg.sender], 1000);
 		uint proportionDonated = SafeMath.div(adjustedDonation, totalDonated);
 		emit FundsClaimed(owner, msg.sender, adjustedDonation, totalDonated, proportionDonated);

@@ -10,6 +10,7 @@ import MilestoneTable from "../components/MilestoneTable"
 
 
 class FundShow extends Component {
+
   state = {
     errorMessage: "",
     loading: false
@@ -17,17 +18,16 @@ class FundShow extends Component {
 
   static async getInitialProps(props) {
     const {accounts, fundContract} = this.props;
-    const milestoneCount = await fundContract.methods.getMilestonesCount().call();
-    const milestones = await Promise.all(
-      Array(parseInt(milestoneCount))
-        .fill()
-        .map((element, index) => {
-          return fundContract.methods.milestones(index).call();
-        })
-    );
-    
-    console.log(milestones);
-    const summary = await fundContract.methods.fundSummary().call();
+    // const milestoneCount = await fundContract.methods.getMilestonesCount().call();
+    // const milestones = await Promise.all(
+    //   Array(parseInt(milestoneCount))
+    //     .fill()
+    //     .map((element, index) => {
+    //       return fundContract.methods.milestones(index).call();
+    //     })
+    // );
+    // console.log(milestones);
+    // const summary = await fundContract.methods.fundSummary().call();
 
     return {
       address: summary[0],

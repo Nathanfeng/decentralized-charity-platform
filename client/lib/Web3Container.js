@@ -15,8 +15,6 @@ export default class Web3Container extends React.Component {
       const web3 = await getWeb3()
       const accounts = await web3.eth.getAccounts()
       const fundContract = await getContract(web3, Fund)
-      console.log(fundContract);
-
 
       this.setState({ web3, accounts, fundContract })
     } catch (error) {
