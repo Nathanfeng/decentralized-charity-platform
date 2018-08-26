@@ -63,16 +63,16 @@ class NewMilestone extends Component {
       <Layout>
         <h3>Step 2: Add Milestones to Your Fund</h3>
         <p>
-          Now that you've initiated the fund, its time to add milestones
+          Now that you've initialized the fund, its time to add milestones
           that your donors will use to evaluate your performance. If over
-          80% of your donors vote that you've achieved your milestone, then
+          50% of votes that are that you've achieved your milestone, then
           you will receive the next portion of your funding.
         </p>
         <p>
           The milestones will divide the total funds into equal installments
           (ie. with 2 milestones, the fund will be paid in 3 installments).
-          When the fund is deployed, the first installment is paid to the fund
-          manager. The fund will need at least 1 milestone to be deployed.
+          When the fund is deployed, the first installment is paid t. The
+          fund will need at least 1 milestone to be deployed.
         </p>
 
         <Form onSubmit={this.onAdd} error={!!this.state.errorMessage}>

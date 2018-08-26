@@ -51,10 +51,8 @@ class FundIndex extends Component {
       <h3>For Charities</h3>
 
         <p>
-          The Decentralized Charity Platform allows charities to raise a
-          fund that gives benefactors transparency on the progress of
-          the project their donations fund, as well as a means to keep
-          the charity accountable to their goals.
+          Here is an overview of the process that a fund manager goes through to
+          raise a fund through the Decentralized Charity Platform
         </p>
         <Container>
         <div class="ui two column grid">
@@ -92,22 +90,24 @@ class FundIndex extends Component {
               </div>
               <div class="completed step">
                 <div class="content">
-                  <div class="title">4. Close Fundraising</div>
+                  <div class="title">4. Activate Fund</div>
                   <div class="description">
                     Once the fundraising goal and minimum number of donors has been
-                    met, you can close the fund to donations. Closing the fund automatically
-                    sends you the first installment to work towards your first milestone.
+                    met, you can Activate the fund. Activating the fund closes the fund
+                    to donations and automatically sends you the first installment to
+                    work towards your first milestone.
                   </div>
                 </div>
               </div>
               <div class="completed step">
                 <div class="content">
-                  <div class="title">5. Update Progress and Open Voting</div>
+                  <div class="title">5. Update Progress and Trigger Next Milestone</div>
                   <div class="description">
-                    After achieving your milestone, in order to receive the payment for the
-                    next installment, you will update donors so they may vote whether to
-                    release the funds for the next installment. Updates continue until all funds
-                    are exhausted.
+                    The next step is updating your donors and waiting for them to vote on
+                    whether you've achieved your milestone. If you've achieved your milestone,
+                    you can trigger the next milestone, which will transfer you the next
+                    installment. If the donors voted that you failed to achieve your milestone,
+                    they can claim their funds.
                   </div>
                 </div>
               </div>
@@ -130,25 +130,17 @@ class FundIndex extends Component {
 
         <h3>For Donors</h3>
         <p>
-          Browse through the funds displayed below to support charities
-          working various causes. The charities propose milestones that
+          The charities propose milestones that
           divide the fund up into equal installments that are paid out
           depending on your vote on whether they achieve each milestone.
           If donors vote that the charity did not meet its milestones,
-          they have the option of retrieving their donations.
+          you have the option of retrieving your donation.
         </p>
 
-        <h2>Donate to These Causes</h2>
-        <p>
-          These are the funds that have been fully set up by a charity and are
-          ready for benefactors can start donating to.
-        </p>
+        <h2>Current Fund</h2>
+        <h3>Fund Title</h3>
+        <h3>Fund Description</h3>
         {/* {this.renderDeployedFunds()} */}
-        <h2>Funds to be Deployed</h2>
-        <p>
-          These are the funds that have been started by a charity but are
-          not yet ready for donations
-        </p>
         </div>
       </Layout>
     )

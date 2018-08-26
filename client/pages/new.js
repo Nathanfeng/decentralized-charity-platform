@@ -42,6 +42,7 @@ class FundNew extends Component {
     return (
       <Layout>
         <h3>Step 1: Get Started Raising a Fund!</h3>
+      <p>Enter the initial conditions for your fund below</p>
 
       <Form onSubmit={this.onSubmit} error={!!this.state.errorMessage}>
         <Form.Field>
@@ -82,7 +83,7 @@ class FundNew extends Component {
         </Form.Field>
 
           <Message error header="Oops!" content={this.state.errorMessage} />
-        <Button loading ={this.state.loading} primary>Create</Button>
+        <Button loading ={this.state.loading} primary>Initialize Fund</Button>
         </Form>
       </Layout>
     );

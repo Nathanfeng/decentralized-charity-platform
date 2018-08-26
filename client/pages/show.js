@@ -25,7 +25,7 @@ class FundShow extends Component {
           return fundContract.methods.milestones(index).call();
         })
     );
-    
+
     console.log(milestones);
     const summary = await fundContract.methods.fundSummary().call();
 
@@ -214,7 +214,7 @@ class FundShow extends Component {
       return (
 
         <Layout>
-          <h2>Fund Name</h2>
+          <h2>Manage Fund</h2>
           <h4>
             Current Status of Fund, fund manager, target # donors,
             target to raise
@@ -226,7 +226,7 @@ class FundShow extends Component {
           </p>
           <ContributeForm />
 
-        <h3>Activate Fund (Fund Manager)</h3>
+        <h3>Step 5: Activate Fund (Fund Manager)</h3>
           <p>
             Once the minimum number of donors and target amount has been
             raised, the fundManager can activate the fund, which pays out the
@@ -244,6 +244,7 @@ class FundShow extends Component {
             </Button>
           </Form>
 
+          <h3>Vote on Milestones (Donors)</h3>
 
           <h4>Current Milestones</h4>
           {/* <MilestoneTable/> */}
@@ -261,7 +262,7 @@ class FundShow extends Component {
             {/* <Body>{this.renderRows()}</Body> */}
           </Table>
 
-          <h3>Next Milestone (Fund Manager)</h3>
+          <h3>Step 6: Next Milestone (Fund Manager)</h3>
           <p>
             Once the the donors vote and pass the milestone, the manager of
             the fund can move the fund on to the next milestone. moving to the

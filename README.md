@@ -28,7 +28,7 @@ The donor is a contributor to the fund. A donor has the following permissions:  
 This project was built using [Next.js](https://github.com/zeit/next.js)
 , React, Truffle and [Semantic-UI](https://react.semantic-ui.com/).
 
-## Pre-requisitions
+## Prerequisites
 
 Node ([https://nodejs.org](https://nodejs.org)) <br>
 Truffle (`npm install -g truffle`) <br>
