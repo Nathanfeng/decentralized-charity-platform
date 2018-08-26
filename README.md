@@ -1,4 +1,4 @@
-# decentralized-charity
+# Decentralized Charity Platform
 
 The Decentralized Charity Platform allows charities to raise a fund that gives benefactors the opportunity to play an active part in making sure the charity is accountable to their goals.
 
@@ -8,18 +8,21 @@ The charity raises a fund and sets a series of milestones that they promise to a
 
 ## User Roles:
 
-### Fund Manager:
-The fund manager is the creator of the fund. The fund manager has the following permissions:  
+### Fund Manager
+The fund manager is the creator of the fund. The fund manager has the following permissions:<br><br>
+**Initialize the Fund:**  
+The fund is initialized by the fund manager, who decides the title, description of the fund, the minimum number of donors and the target amount to be raised.
 **Add a milestone to the fund:**  
-**Deploy the fund:**  to open it up for donations,  
-**Activate the fund:**  
-**Move to next milestone:**  
+The fund manager adds milestones to the fund, which are goals that the fund will work towards. The milestones divide the fund into installments that will be paid upon the donors voting that the fund has achieved their milestone.
+**Deploy the fund:**  Deploying the fund opens it up to donations.
+**Activate the fund:**  Activating the fund releases the first installment to the fund manager to allow them to work towards the first milestone.
+**Move to next milestone:**  After at least half of donors vote on whether to pass the current milestone, and the more than half weighted votes were to pass, the owner can trigger the next milestone. Triggering the next milestone will release the next installment to the fund manager.
 
-### Donor:
-The donor is a contributor to the fund. A donor has the following permissions:
-**Donate to the fund:**  
-**Claim funds:**  
-
+### Donor
+The donor is a contributor to the fund. A donor has the following permissions:  
+**Donate to the fund:**  Donors can donate to the fund, which allows them to participate in the objectives of the fund.
+**Vote on milestone:**  The donor can vote on whether to pass or fail a milestone depending on the charity's report on their performance. Each donor's vote weight is proportional to how much they donated to the fund.
+**Claim funds:**  If a milestone has failed, then all donors who had donated to the fund can retrieve their donations. Donations are returned based on the proportion of the donors donation to the total raised.
 ## Technical Details
 
 This project was built using [Next.js](https://github.com/zeit/next.js)
@@ -31,7 +34,7 @@ Node ([https://nodejs.org](https://nodejs.org)) <br>
 Truffle (`npm install -g truffle`) <br>
 Ganache-CLI (`npm install -g ganache-cli`) <br>
 
-This project was created with a boilerplate library integrating React and Next.js and Truffle. More details on the boilerplate can be found [here](https://github.com/adrianmcli/truffle-next).
+This project was created with a Truffle Box integrating React and Next.js and Truffle. More details on the Truffle Box can be found [here](https://github.com/adrianmcli/truffle-next).
 
 ## Running the Application in Development
 
@@ -56,7 +59,6 @@ module.exports = {
 };
 ```
 
-
 ### Run Tests for the Contract
 In the root directory run:
 ```
@@ -68,7 +70,6 @@ Navigate into the `decentralized-charity-platform/client` folder and run:
 ```
 npm install
 ```
-
 Navigate back into the root directory and run:
 ```
 truffle install
@@ -81,10 +82,10 @@ In the root directory run:
 truffle migrate
 ```
 ### Sign into MetaMask
-With the mnemonic provided by ganache, sign into MetaMask. Make sure that metamask is connected to the right private network. `HTTP://127.0.0.1:7545` if using ganache GUI.
+With the mnemonic provided by ganache, sign into MetaMask. Make sure that metamask is connected to the right private network, `HTTP://127.0.0.1:8545`. If using the `HTTP://127.0.0.1:7545` if using ganache GUI.
 
 ### Start the Application
-In the `decentralized-charity-platform/client` folder and run:
+Navigate to the `client` folder and run:
 
 ```
 npm run dev
@@ -99,4 +100,4 @@ Setting up fund: http://localhost:3000/new
 Adding milestones: http://localhost:3000/milestones  
 Managing the fund: http://localhost:3000/show  
 
-The app should automatically route between the pages depending on the phase in the fund's lifecycle.
+These are the direct links to the pages but the app should automatically route as you work through the fund's lifecycle.
