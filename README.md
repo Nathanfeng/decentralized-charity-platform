@@ -10,19 +10,19 @@ The charity raises a fund and sets a series of milestones that they promise to a
 
 ### Fund Manager
 The fund manager is the creator of the fund. The fund manager has the following permissions:<br><br>
-**Initialize the Fund:**  
-The fund is initialized by the fund manager, who decides the title, description of the fund, the minimum number of donors and the target amount to be raised.
+**Initialize the Fund:**
+The fund is initialized by the fund manager, who decides the title, description of the fund, the minimum number of donors and the target amount to be raised.<br>
 **Add a milestone to the fund:**  
-The fund manager adds milestones to the fund, which are goals that the fund will work towards. The milestones divide the fund into installments that will be paid upon the donors voting that the fund has achieved their milestone.
-**Deploy the fund:**  Deploying the fund opens it up to donations.
-**Activate the fund:**  Activating the fund releases the first installment to the fund manager to allow them to work towards the first milestone.
+The fund manager adds milestones to the fund, which are goals that the fund will work towards. The milestones divide the fund into installments that will be paid upon the donors voting that the fund has achieved their milestone.<br>
+**Deploy the fund:**  Deploying the fund opens it up to donations.<br>
+**Activate the fund:**  Activating the fund releases the first installment to the fund manager to allow them to work towards the first milestone.<br>
 **Move to next milestone:**  After at least half of donors vote on whether to pass the current milestone, and the more than half weighted votes were to pass, the owner can trigger the next milestone. Triggering the next milestone will release the next installment to the fund manager.
 
 ### Donor
-The donor is a contributor to the fund. A donor has the following permissions:  
-**Donate to the fund:**  Donors can donate to the fund, which allows them to participate in the objectives of the fund.
-**Vote on milestone:**  The donor can vote on whether to pass or fail a milestone depending on the charity's report on their performance. Each donor's vote weight is proportional to how much they donated to the fund.
-**Claim funds:**  If a milestone has failed, then all donors who had donated to the fund can retrieve their donations. Donations are returned based on the proportion of the donors donation to the total raised.
+The donor is a contributor to the fund. A donor has the following permissions:  <br><br>
+**Donate to the fund:**  Donors can donate to the fund, which allows them to participate in the objectives of the fund.<br>
+**Vote on milestone:**  The donor can vote on whether to pass or fail a milestone depending on the charity's report on their performance. Each donor's vote weight is proportional to how much they donated to the fund.<br>
+**Claim funds:**  If a milestone has failed, then all donors who had donated to the fund can retrieve their donations. Donations are returned based on the proportion of the donors donation to the total raised.<br>
 ## Technical Details
 
 This project was built using [Next.js](https://github.com/zeit/next.js)
