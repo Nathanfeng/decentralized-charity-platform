@@ -1,7 +1,7 @@
 # Design Pattern Decisions
 
 ## Voting Mechanism
-The voting mechanism in the contract is designed so that each address's votes depended on the proportion of the fund that it donated. If mechanism was instead one address, one vote, the attacker could create many addresses and hence have many votes.
+The voting mechanism in the contract is designed so that each address's votes depends on the proportion of the fund that it donated. If the mechanism was instead one address, one vote, the attacker could create many addresses and hence have many votes.
 
 ## Circuit Breaker
 

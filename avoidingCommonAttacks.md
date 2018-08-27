@@ -2,7 +2,7 @@
 
 ## Reentrancy
 
-In `claimFunds`, the caller's address is tracked in the "fundsClaimed" mapping, tracking addresses that have claimed funds, prior to the transfer of value. Also, `call.value()` is avoided and `transfer()` used instead.
+In `claimFunds`, the caller's address is tracked in the `fundsClaimed` mapping, tracking addresses that have claimed funds, prior to the transfer of value. Also, `call.value()` is avoided and `transfer()` used instead.
 
 ## Timestamp Dependence
 
