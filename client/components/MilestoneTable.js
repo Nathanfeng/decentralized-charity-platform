@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Table, Button } from 'semantic-ui-react';
 import Web3Container from '../lib/Web3Container';
-// import MilestoneRow from './MilestoneRow';
+import MilestoneRow from './MilestoneRow';
 
 class MilestoneTable extends Component {
 
@@ -36,14 +36,13 @@ class MilestoneTable extends Component {
 
 
   renderRows() {
-    return this.props.milestones.map((milestones, index) => {
+    return this.props.milestones.map((milestone, index) => {
       return (
         <MilestoneRow
           key={index}
           id={index}
           request={request}
           address={this.props.address}
-          approversCount={this.props.approversCount}
         />
       );
     });

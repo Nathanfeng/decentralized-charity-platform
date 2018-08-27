@@ -19,7 +19,6 @@ class FundShow extends Component {
   static async getInitialProps(props) {
     const {accounts, fundContract} = this.props;
     const milestoneCount = await fundContract.methods.getMilestonesCount().call();
-    console.log(milestoneCount);
     const milestones = await Promise.all(
       Array(parseInt(milestoneCount))
         .fill()
@@ -27,9 +26,7 @@ class FundShow extends Component {
           return fundContract.methods.milestones(index).call();
         })
     );
-    // console.log(milestones);
     const summary = await fundContract.methods.fundSummary().call();
-    console.log(summary);
     return {
       address: summary[0],
       totalDonors: summary[1],
@@ -66,7 +63,7 @@ class FundShow extends Component {
       {
         header: manager,
         meta: "Address of Manager",
-        description: "Manager created this fund",
+        description: "Manager that created this fund",
         style: { overflowWrap: "break-word"}
       },
 
@@ -104,7 +101,7 @@ class FundShow extends Component {
       header: active,
       meta: 'Fund Acive',
       description:
-        'The fund has been activated by the fund manager'
+        'Whether the fund has been activated by the fund manager'
     }
   ];
 
@@ -115,7 +112,7 @@ class FundShow extends Component {
     event.preventDefault();
 
     try {
-    // const {accounts, fundContract} = this.props;
+    const {accounts, fundContract} = this.props;
     await fundContract.methods.activateFund()
       .send({
         from:accounts[0]
@@ -131,7 +128,7 @@ class FundShow extends Component {
     event.preventDefault();
 
     try {
-    // const {accounts, fundContract} = this.props;
+    const {accounts, fundContract} = this.props;
     await fundContract.methods.nextMilestone()
       .send({
         from:accounts[0]
@@ -187,10 +184,10 @@ class FundShow extends Component {
       return (
 
         <Layout>
-          <h2>Fund Name</h2>
+          <h2>{this.props.title}</h2>
+          <p>{this.props.description}</p>
           <h4>
-            Current Status of Fund, fund manager, target # donors,
-            target to raise
+            Fund Stats
           </h4>
           {this.renderCards()}
 
@@ -212,6 +209,11 @@ class FundShow extends Component {
             </Button>
           </Form>
 
+          <div style={{ marginBottom: "30px"}}>
+            <Link route={`/showDonor`}>
+               <a>Click here to view the fund details as a donor </a>
+            </Link>
+          </div>
 
           <h4>Current Milestones</h4>
           {/* <MilestoneTable/> */}
@@ -224,6 +226,7 @@ class FundShow extends Component {
                 <HeaderCell>Description</HeaderCell>
                 <HeaderCell>Pass Rate</HeaderCell>
                 <HeaderCell>Meets Milestone</HeaderCell>
+                <HeaderCell>Fails Milestone</HeaderCell>
               </Row>
             </Header>
             {/* <Body>{this.renderRows()}</Body> */}
@@ -231,13 +234,11 @@ class FundShow extends Component {
 
           <h3>Step 5: Next Milestone</h3>
           <p>
-            Once the the donors vote and pass the milestone, the manager of
-            the fund can move the fund on to the next milestone. Moving to the
-            next milestone will pay the fund manager the next installment and open up voting
-            on the next milestone.
+            Once you've exhausted your funds or have achieved your milestone, send a report to donors on your progress. This will allow them to vote on whether you've achieved those milestones. Once the the donors vote and pass the milestone, you can move the fund on to the next milestone by clicking below. Moving to the next milestone will pay the fund manager the next installment and open up voting on the next milestone.
           </p>
 
           <Form
+            style={{ marginBottom: "30px"}}
             onSubmit={this.onNextMilestone}
             error={!!this.state.errorMessage}
           >

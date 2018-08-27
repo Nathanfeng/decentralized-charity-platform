@@ -150,6 +150,8 @@ contract Fund is Ownable, Pausable {
 	 * @return targetAmount The target amount the fund needs to raise to deploy.
 	 * @return acceptingDonations Whether the fund is accepting donations.
 	 * @return active Whether the fund is accepting votes.
+	 * @return title Title of the fund.
+	 * @return description Description on the goals of the fund.
 	 */
 
 	function fundSummary()

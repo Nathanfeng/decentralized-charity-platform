@@ -27,7 +27,6 @@ class FundShow extends Component {
           return fundContract.methods.milestones(index).call();
         })
     );
-    // console.log(milestones);
     const summary = await fundContract.methods.fundSummary().call();
     console.log(summary);
     return {
@@ -68,7 +67,7 @@ class FundShow extends Component {
       {
         header: manager,
         meta: "Address of Manager",
-        description: "Manager created this fund",
+        description: "Manager that created this fund",
         style: { overflowWrap: "break-word"}
       },
 
@@ -106,7 +105,7 @@ class FundShow extends Component {
       header: active,
       meta: 'Fund Acive',
       description:
-        'The fund has been activated by the fund manager'
+        'Whether the fund has been activated by the fund manager'
     }
   ];
 
@@ -139,8 +138,7 @@ class FundShow extends Component {
           <h2>{this.props.title}</h2>
           <p>{this.props.description}</p>
           <h4>
-            Current Status of Fund, fund manager, target # donors,
-            target to raise
+            Fund Details
           </h4>
           {this.renderCards()}
 
@@ -151,8 +149,26 @@ class FundShow extends Component {
           </p>
           <ContributeForm />
 
+          <Link route={`/showManager`} style={{marginTop: "30px"}}>
+             <a>Click here to view the fund details as a fund manager</a>
+          </Link>
+
+
 
           <h4>Current Milestones</h4>
+          <Table>
+            <Header>
+              <Row>
+                <HeaderCell>ID</HeaderCell>
+                <HeaderCell>Title</HeaderCell>
+                <HeaderCell>Description</HeaderCell>
+                <HeaderCell>Pass Rate</HeaderCell>
+                <HeaderCell>Meets Milestone</HeaderCell>
+                <HeaderCell>Fails Milestone</HeaderCell>
+              </Row>
+            </Header>
+            {/* <Body>{this.renderRows()}</Body> */}
+          </Table>
           {/* <MilestoneTable/> */}
 
           <h3>Claim Funds</h3>
@@ -170,6 +186,7 @@ class FundShow extends Component {
           </p>
 
           <Form
+            style={{ marginBottom: "30px"}}
             onSubmit={this.onClaim}
             error={!!this.state.errorMessage}
           >

@@ -18,7 +18,9 @@ class FundIndex extends Component {
   renderTitle = () => {
     const {accounts, fundContract} = this.props;
     // console.log(accounts[0]);
-    const outcome = fundContract.methods.owner.call({from: accounts[0]});
+    const outcome = fundContract.methods.owner.send({
+      from:accounts[0]
+    });
     console.log(outcome);
     // const summary = await this.props.fundContract.methods.fundSummary().call();
     return (

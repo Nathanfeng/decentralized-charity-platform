@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { Table, Button } from 'semantic-ui-react';
-import Campaign from '../ethereum/campaign';
 import Web3Container from '../lib/Web3Container';
 
 
@@ -22,7 +21,6 @@ class MilestoneRow extends Component {
   render() {
     const { Row, Cell } = Table;
     const { id, milestones, milestoneCount } = this.props;
-    const readyToFinalize = request.approvalCount > approversCount / 2;
 
     return milestones.map((milestone, index) => {
       return (
@@ -56,6 +54,7 @@ class MilestoneRow extends Component {
     });
 
   }
+}
 
 
 export default () => (

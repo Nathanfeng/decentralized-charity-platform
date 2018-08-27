@@ -15,7 +15,6 @@ class NewMilestone extends Component {
     deployLoading: false
   };
 
-
   onAdd = async (event) => {
     event.preventDefault();
     this.setState({ addLoading: true, errorMessage: ""})
@@ -53,9 +52,6 @@ class NewMilestone extends Component {
     this.setState({ deployLoading: false });
   };
 
-  renderRows = async (event) => {
-
-  }
 
   render() {
     const { Header, Row, HeaderCell, Body } = Table;
