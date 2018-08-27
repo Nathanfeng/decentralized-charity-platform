@@ -87,7 +87,6 @@ class FundIndex extends Component {
         </div>
       </Container>
 
-        <div>
         <Link route="/new">
           <a>
             <Button
@@ -116,7 +115,6 @@ class FundIndex extends Component {
           </Link>
         </div>
 
-        </div>
       </Layout>
     )
   }
