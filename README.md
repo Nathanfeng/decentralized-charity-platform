@@ -94,7 +94,7 @@ npm run dev
 Visit http://localhost:3000
 
 ### Visiting the pages in the App
-The app has 4 main pages that are listed below:
+The app has 5 main pages that are listed below:
 
 Home page: http://localhost:3000  
 Setting up fund: http://localhost:3000/new  
