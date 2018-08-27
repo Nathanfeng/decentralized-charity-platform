@@ -1,5 +1,5 @@
 # Decentralized Charity Platform
-Traditionally, when donors donate to a charity there is no reporting progress of the projects that are funded, or transparency around the outcome of those projects. This leads to funds being misallocated, inefficiently run projects, and low donor engagement. <br><br>
+Traditionally, when donors donate to a charity, there is no reporting on progress of the projects that are funded, or transparency around the outcome of those projects. This leads to funds being misallocated, inefficiently run projects, and low donor engagement. <br>
 
 The Decentralized Charity Platform allows charities to raise a fund that gives benefactors the opportunity to play an active part in making sure the charity is accountable to their goals.
 
