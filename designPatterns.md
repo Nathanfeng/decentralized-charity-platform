@@ -7,10 +7,6 @@ The voting mechanism in the contract is designed so that each address's votes de
 
 Circuit breaker (`Pausable`) is applied on all payable functions. If a vulnerability is found, all payable functions would be suspended upon triggering by the owner of the contract.
 
-## Using Push over Pull Payments
-
-Payable functions (`nextMilestone`, `claimFunds`, `activateFund`) use pull over push to transfer funds.
-
 ## Fail Early and Fail Loud
 
 Throughout the contract, require statements are used as early as possible in functions, providing early indication that a certain function has failed.

@@ -12,10 +12,6 @@ This application does not make use the of the block timestamp.
 
 All mathematical operations have been replaced with methods from SafeMath imported from the Open Zeppelin library.
 
-## DoS with (Unexpected) Revert
-
-Payable functions (`nextMilestone`, `claimFunds`, `activateFund`) use pull instead of push to transfer funds.
-
 ## Forcibly Sending Ether to a Contract
 
 The logic in functions in the contract are independent of the balance in the contract. Any ether forcibly sent into the contract will not affect the functionality of the contract.
