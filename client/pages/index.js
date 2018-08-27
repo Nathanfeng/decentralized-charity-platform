@@ -6,31 +6,7 @@ import Web3Container from '../lib/Web3Container';
 
 
 class FundIndex extends Component {
-  // static async getInitialProps() {
-  // console.log('test');
-  // const {accounts, fundContract} = this.props;
-  // const summary = await this.props.fundContract.methods.fundSummary().call();
 
-  // console.log(summary)
-  // return { summary };
-  // }
-
-  renderTitle = () => {
-    const {accounts, fundContract} = this.props;
-    // console.log(accounts[0]);
-    const outcome = fundContract.methods.owner.send({
-      from:accounts[0]
-    });
-    console.log(outcome);
-    // const summary = await this.props.fundContract.methods.fundSummary().call();
-    return (
-      <div>
-        {/* <h3>hi</h3> */}
-      {/* <h3>{fundContract.address}</h3> */}
-        {/* <h4>{summary[8]}</h4> */}
-      </div>
-    )
-  }
 
   render() {
     return (
