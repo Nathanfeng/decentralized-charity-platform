@@ -123,7 +123,7 @@ class FundIndex extends Component {
               />
           </a>
         </Link> <br/>
-      <Link route={`/showManager`} style={{marginTop: "30px"}}>
+        <Link route={`/showManager`} style={{marginTop: "30px"}}>
            <a>Click here to view the fund details as a fund manager</a>
         </Link>
 
