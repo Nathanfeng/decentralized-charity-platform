@@ -155,12 +155,12 @@ contract Fund is Ownable, Pausable {
 	function fundSummary()
 		public
 		view
-		returns(address, uint, uint, uint, uint, bool, bool)
+		returns(address, uint, uint, uint, uint, bool, bool, string, string)
 	{
 		require(fundInitialized);
 
 		return (owner, totalDonors, minNumberDonators, totalDonated,
-		targetAmount, acceptingDonations, active);
+		targetAmount, acceptingDonations, active, title, description);
 	}
 
 	/**

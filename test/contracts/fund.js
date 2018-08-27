@@ -3,9 +3,9 @@ const { ethGetBalance, ethGetTransaction } = require('../helpers/web3');
 
 
 contract('Fund', (accounts) => {
-    let owner = accounts[1];
-    let firstDonor = accounts[2];
-    let secondDonor = accounts[3];
+    let owner = accounts[2];
+    let firstDonor = accounts[3];
+    let secondDonor = accounts[4];
     let fund;
 
     beforeEach(async () => {

@@ -21,38 +21,42 @@ class MilestoneRow extends Component {
 
   render() {
     const { Row, Cell } = Table;
-    const { id, milestone, milestoneCount } = this.props;
+    const { id, milestones, milestoneCount } = this.props;
     const readyToFinalize = request.approvalCount > approversCount / 2;
 
-    return (
-      <Row
-        disabled={request.complete}
-        positive={readyToFinalize && !request.complete}
-      >
-        <Cell>{id}</Cell>
-        <Cell>{request.title}</Cell>
-        <Cell>{request.description}</Cell>
-        <Cell>
-          {request.passingVotes}/{milestone.totalVoted}
-        </Cell>
-        <Cell>
-          {request.complete ? null : (
-            <Button color="green" basic onClick={this.onPass}>
-              Meets Milestone
-            </Button>
-          )}
-        </Cell>
-        <Cell>
-          {request.complete ? null : (
-            <Button color="red" basic onClick={this.onFail}>
-              Fails Milestone
-            </Button>
-          )}
-        </Cell>
-      </Row>
-    );
+    return milestones.map((milestone, index) => {
+      return (
+
+        <Row
+          disabled={milestone.acceptingVotes}
+          positive={!milestone.acceptingVotes}
+        >
+          <Cell>{id}</Cell>
+          <Cell>{milestone.title}</Cell>
+          <Cell>{milestone.description}</Cell>
+          <Cell>
+            {milestone.passingVotes / (milestone.passingVotes + milestone.failingVotes)}
+          </Cell>
+          <Cell>
+            {milestone.acceptingVotes ? null : (
+              <Button color="green" basic onClick={this.onPass}>
+                Meets Milestone
+              </Button>
+            )}
+          </Cell>
+          <Cell>
+            {milestone.acceptingVotes ? null : (
+              <Button color="red" basic onClick={this.onFail}>
+                Fails Milestone
+              </Button>
+            )}
+          </Cell>
+        </Row>
+      );
+    });
+
   }
-}
+
 
 export default () => (
   <Web3Container

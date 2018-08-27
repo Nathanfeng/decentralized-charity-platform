@@ -16,7 +16,7 @@ The fund is initialized by the fund manager, who decides the title, description 
 The fund manager adds milestones to the fund, which are goals that the fund will work towards. The milestones divide the fund into installments that will be paid upon the donors voting that the fund has achieved their milestone.<br>
 **Deploy the fund:**  Deploying the fund opens it up to donations.<br>
 **Activate the fund:**  Activating the fund releases the first installment to the fund manager to allow them to work towards the first milestone.<br>
-**Move to next milestone:**  After at least half of donors vote on whether to pass the current milestone, and the more than half weighted votes were to pass, the owner can trigger the next milestone. Triggering the next milestone will release the next installment to the fund manager.
+**Move to next milestone:**  After at least half of donors vote on whether to pass the current milestone, and more than half weighted the votes to pass, the owner can trigger the next milestone. Triggering the next milestone will release the next installment to the fund manager.
 
 ### Donor
 The donor is a contributor to the fund. A donor has the following permissions:  <br><br>
@@ -98,6 +98,7 @@ The app has 4 main pages that are listed below:
 Home page: http://localhost:3000  
 Setting up fund: http://localhost:3000/new  
 Adding milestones: http://localhost:3000/milestones  
-Managing the fund: http://localhost:3000/show  
+Donor facing fund management page: http://localhost:3000/showDonor  
+Fund Manager facing fund management page: http://localhost:3000/showManager  
 
 These are the direct links to the pages but the app should automatically route as you work through the fund's lifecycle.

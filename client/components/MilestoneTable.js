@@ -5,20 +5,20 @@ import Web3Container from '../lib/Web3Container';
 
 class MilestoneTable extends Component {
 
-  // static async getInitialProps(props) {
-  //   const {accounts, fundContract} = this.props;
-  //
-  //   const milestoneCount = await fundContract.getMilestonesCount().call();
-  //   const milestones = await Promise.all(
-  //     Array(parseInt(milestoneCount))
-  //       .fill()
-  //       .map((element, index) => {
-  //         return fundContract.milestones(index).call();
-  //       })
-  //   );
-  //
-  //   return { accounts, milestones, milestoneCount, fundContract };
-  // }
+  static async getInitialProps(props) {
+    const {accounts, fundContract} = this.props;
+
+    const milestoneCount = await fundContract.getMilestonesCount().call();
+    const milestones = await Promise.all(
+      Array(parseInt(milestoneCount))
+        .fill()
+        .map((element, index) => {
+          return fundContract.milestones(index).call();
+        })
+    );
+
+    return { accounts, milestones, milestoneCount, fundContract };
+  }
 
     onPass = async () => {
       const {accounts, fundContract} = this.props;
@@ -34,51 +34,21 @@ class MilestoneTable extends Component {
       });
     };
 
-  renderRows = () => {
-    const { Row, Cell } = Table;
 
-    const {accounts, fundContract} = this.props;
-
-    const milestoneCount = fundContract.getMilestonesCount().call();
-    const milestones = Promise.all(
-      Array(parseInt(milestoneCount))
-        .fill()
-        .map((element, index) => {
-          return fundContract.milestones(index).call();
-        })
-    );
-
-    return milestones.map((milestone, index) => {
+  renderRows() {
+    return this.props.milestones.map((milestones, index) => {
       return (
-
-        <Row
-          disabled={milestone.acceptingVotes}
-          positive={!milestone.acceptingVotes}
-        >
-          <Cell>{milestone.title}</Cell>
-          <Cell>{milestone.description}</Cell>
-          <Cell>
-            {milestone.passingVotes / (milestone.passingVotes + milestone.failingVotes)}
-          </Cell>
-          <Cell>
-            {milestone.acceptingVotes ? null : (
-              <Button color="green" basic onClick={this.onPass}>
-                Meets Milestone
-              </Button>
-            )}
-          </Cell>
-          <Cell>
-            {milestone.acceptingVotes ? null : (
-              <Button color="red" basic onClick={this.onFail}>
-                Fails Milestone
-              </Button>
-            )}
-          </Cell>
-        </Row>
+        <MilestoneRow
+          key={index}
+          id={index}
+          request={request}
+          address={this.props.address}
+          approversCount={this.props.approversCount}
+        />
       );
     });
-
   }
+
 
   render() {
     const { Header, Row, HeaderCell, Body } = Table;
@@ -95,7 +65,7 @@ class MilestoneTable extends Component {
             <HeaderCell>Fails Milestone</HeaderCell>
           </Row>
         </Header>
-        <Body>{this.renderRows()}</Body>
+        {/* <Body>{this.renderRows()}</Body> */}
       </Table>
     )
   }

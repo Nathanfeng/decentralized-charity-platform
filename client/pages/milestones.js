@@ -45,7 +45,7 @@ class NewMilestone extends Component {
         .deployFund()
         .send({ from: accounts[0]});
 
-      Router.pushRoute("/show");
+      Router.pushRoute("/showManager");
     } catch (err) {
       this.setState({ errorMessage: err.message });
     }

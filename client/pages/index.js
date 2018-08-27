@@ -6,37 +6,31 @@ import Web3Container from '../lib/Web3Container';
 
 
 class FundIndex extends Component {
-  static async getInitialProps() {
+  // static async getInitialProps() {
+  // console.log('test');
+  // const {accounts, fundContract} = this.props;
+  // const summary = await this.props.fundContract.methods.fundSummary().call();
 
-  const {accounts, fundFactoryContract} = this.props;
-  const funds = await fundFactoryContract.methods.getInitiatedFunds().call({from: accounts[0]});
+  // console.log(summary)
+  // return { summary };
+  // }
 
-  return { funds };
+  renderTitle = () => {
+    const {accounts, fundContract} = this.props;
+    // console.log(accounts[0]);
+    const outcome = fundContract.methods.owner.call({from: accounts[0]});
+    console.log(outcome);
+    // const summary = await this.props.fundContract.methods.fundSummary().call();
+    return (
+      <div>
+        {/* <h3>hi</h3> */}
+      {/* <h3>{fundContract.address}</h3> */}
+        {/* <h4>{summary[8]}</h4> */}
+      </div>
+    )
   }
-
-  renderDeployedFunds() {
-
-    const items = this.props.funds.map(address => {
-    // const items = funds.map(address => {
-      return {
-        header: address,
-        description: (
-          <Link route={`/campaigns/${address}`}>
-            <a>View Campaign</a>
-          </Link>
-        ),
-        fluid: true
-      };
-    });
-
-    return <Card.Group items={items} />;
-  }
-
-
 
   render() {
-    console.log('test');
-
     return (
       <Layout>
         <h2>What Does the Platform Do?</h2>
@@ -120,27 +114,31 @@ class FundIndex extends Component {
         <Link route="/new">
           <a>
             <Button
-              style={{marginTop: "20px"}}
+              style={{marginTop: "20px", marginBottom: "10px"}}
               floated="top"
               content="Get Started Raising a Fund!"
               primary
               />
           </a>
+        </Link> <br/>
+      <Link route={`/showManager`} style={{marginTop: "30px"}}>
+           <a>Click here to view the fund details as a fund manager</a>
         </Link>
 
         <h3>For Donors</h3>
-        <p>
+        <p >
           The charities propose milestones that
           divide the fund up into equal installments that are paid out
           depending on your vote on whether they achieve each milestone.
           If donors vote that the charity did not meet its milestones,
           you have the option of retrieving your donation.
         </p>
+        <div style={{ marginBottom: "30px"}}>
+          <Link route={`/showDonor`}>
+             <a>Click here to view the fund details as a donor </a>
+          </Link>
+        </div>
 
-        <h2>Current Fund</h2>
-        <h3>Fund Title</h3>
-        <h3>Fund Description</h3>
-        {/* {this.renderDeployedFunds()} */}
         </div>
       </Layout>
     )
@@ -150,11 +148,11 @@ class FundIndex extends Component {
 export default () => (
   <Web3Container
     renderLoading={() => <div>Loading Page...</div>}
-    render={({ web3, accounts, fundFactoryContract }) => (
+    render={({ web3, accounts, fundContract }) => (
       <FundIndex
         web3={web3}
         accounts={accounts}
-        fundFactoryContract={fundFactoryContract}
+        fundContract={fundContract}
       />
     )}
   />
