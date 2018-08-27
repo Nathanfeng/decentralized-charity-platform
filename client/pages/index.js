@@ -7,7 +7,6 @@ import Web3Container from '../lib/Web3Container';
 
 class FundIndex extends Component {
 
-
   render() {
     return (
       <Layout>

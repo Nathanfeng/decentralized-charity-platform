@@ -42,7 +42,7 @@ class FundNew extends Component {
     return (
       <Layout>
         <h3>Step 1: Get Started Raising a Fund!</h3>
-      <p>Enter the initial conditions for your fund below</p>
+      <p>Enter information and requirements for your fund below</p>
 
       <Form onSubmit={this.onSubmit} error={!!this.state.errorMessage}>
         <Form.Field>

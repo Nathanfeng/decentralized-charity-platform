@@ -16,10 +16,8 @@ class FundShow extends Component {
   };
 
   static async getInitialProps(props) {
-    const milestoneCount = 0;
     const {accounts, fundContract} = this.props;
-    // const milestoneCount = await fundContract.methods.getMilestonesCount().call();
-    console.log(milestoneCount);
+    const milestoneCount = await fundContract.methods.getMilestonesCount().call();
     const milestones = await Promise.all(
       Array(parseInt(milestoneCount))
         .fill()
@@ -28,7 +26,6 @@ class FundShow extends Component {
         })
     );
     const summary = await fundContract.methods.fundSummary().call();
-    console.log(summary);
     return {
       address: summary[0],
       totalDonors: summary[1],
@@ -174,14 +171,14 @@ class FundShow extends Component {
           <h3>Claim Funds</h3>
           <p>
             Once the the donors vote and pass the milestone, the manager of
-            the fund can move the fund on to the next milestone. moving to the
+            the fund can move the fund on to the next milestone. Moving to the
             next milestone will pay the fund the next installment and open up voting
             on the next milestone.
           </p>
           <p>
             If the donors vote that the charity did not complete the milestone,
             then they have the option to claim their funds. When donors claim funds,
-            they will be refunded the proportion that they had donated to the fund of
+            they will be refunded the proportion that they had donated to the fund from
             the remaining funds.
           </p>
 
