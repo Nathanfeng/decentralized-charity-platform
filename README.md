@@ -73,7 +73,6 @@ npm install
 ```
 Navigate back into the root directory and run:
 ```
-truffle install
 truffle compile
 ```
 
