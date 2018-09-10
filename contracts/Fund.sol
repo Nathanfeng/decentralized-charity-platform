@@ -256,9 +256,9 @@ contract Fund is Ownable, Pausable {
     require(!donated[msg.sender]);
 		require(acceptingDonations);
 
-    totalDonated = SafeMath.add(totalDonated, msg.value);
+  	totalDonated = SafeMath.add(totalDonated, msg.value);
 		totalDonors++;
-    donated[msg.sender] = true;
+  	donated[msg.sender] = true;
 		amountDonated[msg.sender] = msg.value;
 		emit DonationReceived(owner, msg.sender, msg.value);
   }
@@ -300,10 +300,10 @@ contract Fund is Ownable, Pausable {
 		notAcceptingDonations
 		public
 	{
-    require(donated[msg.sender]);
-    require(!(milestones[currentMilestoneIndex].voted[msg.sender]));
-    require(milestones[currentMilestoneIndex].acceptingVotes);
-    require(active);
+		require(donated[msg.sender]);
+		require(!(milestones[currentMilestoneIndex].voted[msg.sender]));
+		require(milestones[currentMilestoneIndex].acceptingVotes);
+		require(active);
 
 		uint donationAmount = amountDonated[msg.sender];
 		uint passingVotes = milestones[currentMilestoneIndex].passingVotes;
