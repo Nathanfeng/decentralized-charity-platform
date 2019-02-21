@@ -37,7 +37,6 @@ class FundShow extends Component {
           return fundContract.methods.milestones(index).call();
         })
     );
-    console.log(milestones);
     this.setState({
       manager: summary[0],
       totalDonors: summary[1],
@@ -63,7 +62,7 @@ class FundShow extends Component {
 
         <Row
           disabled={!milestone.acceptingVotes}
-          // positive={!milestone.acceptingVotes}
+          positive={!milestone.acceptingVotes}
         >
           <Cell>{index + 1}</Cell>
         <Cell>{milestone.name}</Cell>
@@ -93,7 +92,21 @@ class FundShow extends Component {
 
   }
 
-  renderCards() {
+  onPass = async () => {
+    const {accounts, fundContract} = this.props;
+    await fundContract.methods.recordVote(true).send({
+      from: accounts[0]
+    });
+  };
+
+  onFail = async () => {
+    const {accounts, fundContract} = this.props;
+    await fundContract.methods.recordVote(false).send({
+      from: accounts[0]
+    });
+  };
+
+  renderCards = ()=> {
     const {
       manager,
       totalDonors,
@@ -150,7 +163,7 @@ class FundShow extends Component {
     },
     {
       header: active,
-      meta: 'Fund Acive',
+      meta: 'Fund Active',
       description:
         'Whether the fund has been activated by the fund manager'
     }

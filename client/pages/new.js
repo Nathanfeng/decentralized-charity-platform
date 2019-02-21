@@ -18,7 +18,7 @@ class FundNew extends Component {
   onSubmit = async (event) => {
     event.preventDefault();
     this.setState({ loading: true, errorMessage: ""});
-    const {name, descrip, targetAmount, minNumberDonators} = this.state;
+    const {name, description, targetAmount, minNumberDonators} = this.state;
 
     try {
     const {accounts, fundContract} = this.props;

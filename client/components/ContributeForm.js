@@ -17,12 +17,13 @@ class ContributeForm extends Component {
 
     try {
       const {accounts, fundContract} = this.props;
+      console.log(accounts);
       await fundContract.methods.makeDonation().send({
         from: accounts[0],
         value: this.state.value
       });
 
-      Router.replaceRoute(`/show`);
+      // Router.replaceRoute(`/show`);
     } catch (err) {
       this.setState({ errorMessage: err.message });
     }
