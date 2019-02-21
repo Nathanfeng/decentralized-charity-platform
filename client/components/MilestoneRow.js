@@ -20,52 +20,53 @@ class MilestoneRow extends Component {
 
   render() {
     const { Row, Cell } = Table;
-    const { id, milestones, milestoneCount } = this.props;
-
-    return milestones.map((milestone, index) => {
+    const { index, milestone, onPass, onFail} = this.props;
       return (
-
         <Row
-          disabled={milestone.acceptingVotes}
+          disabled={!milestone.acceptingVotes}
           positive={!milestone.acceptingVotes}
         >
-          <Cell>{id}</Cell>
-          <Cell>{milestone.title}</Cell>
+          <Cell>{index + 1}</Cell>
+          <Cell>{milestone.name}</Cell>
           <Cell>{milestone.description}</Cell>
           <Cell>
-            {milestone.passingVotes / (milestone.passingVotes + milestone.failingVotes)}
+            {milestone.passingVotes / (milestone.passingVotes + milestone.failingVotes) ?
+              milestone.passingVotes / (milestone.passingVotes + milestone.failingVotes) : 'N/A'
+            }
           </Cell>
           <Cell>
-            {milestone.acceptingVotes ? null : (
-              <Button color="green" basic onClick={this.onPass}>
+            {milestone.acceptingVotes ? (
+              <Button color="green" basic onClick={onPass}>
                 Meets Milestone
               </Button>
-            )}
+            ) : null}
           </Cell>
           <Cell>
-            {milestone.acceptingVotes ? null : (
-              <Button color="red" basic onClick={this.onFail}>
+            {milestone.acceptingVotes ? (
+              <Button color="red" basic onClick={onFail}>
                 Fails Milestone
               </Button>
-            )}
+            ) : null}
           </Cell>
         </Row>
       );
-    });
-
   }
 }
 
 
-export default () => (
-  <Web3Container
-    renderLoading={() => <div>Loading Page...</div>}
-    render={({ web3, accounts, fundContract }) => (
-      <MilestoneRow
-        web3={web3}
-        accounts={accounts}
-        fundContract={fundContract}
-      />
-    )}
-  />
-)
+
+export default MilestoneRow;
+
+
+// () => (
+//   <Web3Container
+//     renderLoading={() => <div>Loading Page...</div>}
+//     render={({ web3, accounts, fundContract }) => (
+//       <MilestoneRow
+//         web3={web3}
+//         accounts={accounts}
+//         fundContract={fundContract}
+//       />
+//     )}
+//   />
+// )

@@ -12,12 +12,24 @@ class FundShow extends Component {
 
   state = {
     errorMessage: "",
-    loading: false
+    loading: false,
+    manager:"",
+    totalDonors:"",
+    minNumberDonators:"",
+    totalDonated:"",
+    targetAmount:"",
+    acceptingDonations:"",
+    active:"",
+    accounts:"",
+    fundContract:"",
+    milestoneCount: "",
+    milestones: ""
   };
 
-  static async getInitialProps(props) {
+  componentDidMount = async () => {
     const {accounts, fundContract} = this.props;
     const milestoneCount = await fundContract.methods.getMilestonesCount().call();
+    const summary = await fundContract.methods.fundSummary().call();
     const milestones = await Promise.all(
       Array(parseInt(milestoneCount))
         .fill()
@@ -25,22 +37,60 @@ class FundShow extends Component {
           return fundContract.methods.milestones(index).call();
         })
     );
-    const summary = await fundContract.methods.fundSummary().call();
-    return {
-      address: summary[0],
+    console.log(milestones);
+    this.setState({
+      manager: summary[0],
       totalDonors: summary[1],
       minNumberDonators: summary[2],
       totalDonated: summary[3],
       targetAmount: summary[4],
-      acceptingDonations: summary[5],
-      active: summary[6],
+      acceptingDonations: summary[5].toString(),
+      active: summary[6].toString(),
       title: summary[7],
       description: summary[8],
       milestones,
       milestoneCount,
       fundContract,
       accounts
-    };
+    });
+
+  }
+
+  renderRows = () => {
+    const { Row, Cell } = Table;
+    return Object.values(this.state.milestones).map((milestone, index) => {
+      return (
+
+        <Row
+          disabled={!milestone.acceptingVotes}
+          // positive={!milestone.acceptingVotes}
+        >
+          <Cell>{index + 1}</Cell>
+        <Cell>{milestone.name}</Cell>
+          <Cell>{milestone.description}</Cell>
+          <Cell>
+            {milestone.passingVotes / (milestone.passingVotes + milestone.failingVotes) ?
+              milestone.passingVotes / (milestone.passingVotes + milestone.failingVotes) : 'N/A'
+            }
+          </Cell>
+          <Cell>
+            {milestone.acceptingVotes ? (
+              <Button color="green" basic onClick={this.onPass}>
+                Meets Milestone
+              </Button>
+            ) : null}
+          </Cell>
+          <Cell>
+            {milestone.acceptingVotes ? (
+              <Button color="red" basic onClick={this.onFail}>
+                Fails Milestone
+              </Button>
+            ) : null}
+          </Cell>
+        </Row>
+      );
+    });
+
   }
 
   renderCards() {
@@ -57,7 +107,7 @@ class FundShow extends Component {
       title,
       description,
       milestoneCount
-    } = this.props;
+    } = this.state;
 
 
     const items = [
@@ -134,10 +184,25 @@ class FundShow extends Component {
         <Layout>
           <h2>{this.props.title}</h2>
           <p>{this.props.description}</p>
-          <h4>
+        <h3>
             Fund Details
-          </h4>
+        </h3>
           {this.renderCards()}
+
+          <h3>Current Milestones</h3>
+          <Table>
+            <Header>
+              <Row>
+                <HeaderCell>#</HeaderCell>
+                <HeaderCell>Title</HeaderCell>
+                <HeaderCell>Description</HeaderCell>
+                <HeaderCell>Pass Rate</HeaderCell>
+                <HeaderCell>Meets Milestone</HeaderCell>
+                <HeaderCell>Fails Milestone</HeaderCell>
+              </Row>
+            </Header>
+            <Body>{this.renderRows()}</Body>
+          </Table>
 
           <h3>Donate to this Fund</h3>
           <p>
@@ -152,21 +217,7 @@ class FundShow extends Component {
 
 
 
-          <h4>Current Milestones</h4>
-          <Table>
-            <Header>
-              <Row>
-                <HeaderCell>ID</HeaderCell>
-                <HeaderCell>Title</HeaderCell>
-                <HeaderCell>Description</HeaderCell>
-                <HeaderCell>Pass Rate</HeaderCell>
-                <HeaderCell>Meets Milestone</HeaderCell>
-                <HeaderCell>Fails Milestone</HeaderCell>
-              </Row>
-            </Header>
-            {/* <Body>{this.renderRows()}</Body> */}
-          </Table>
-          {/* <MilestoneTable/> */}
+
 
           <h3>Claim Funds</h3>
           <p>

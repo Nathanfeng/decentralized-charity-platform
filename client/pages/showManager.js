@@ -31,14 +31,6 @@ class FundShow extends Component {
     const {accounts, fundContract} = this.props;
     const milestoneCount = await fundContract.methods.getMilestonesCount().call();
     const summary = await fundContract.methods.fundSummary().call();
-    const milestones = await Promise.all(
-      Array(parseInt(milestoneCount))
-        .fill()
-        .map((element, index) => {
-          return fundContract.methods.milestones(index).call();
-        })
-    );
-    console.log(milestones);
     this.setState({
       manager: summary[0],
       totalDonors: summary[1],
@@ -49,7 +41,6 @@ class FundShow extends Component {
       active: summary[6].toString(),
       title: summary[7],
       description: summary[8],
-      milestones,
       milestoneCount,
       fundContract,
       accounts
@@ -154,42 +145,6 @@ class FundShow extends Component {
 
   }
 
-  renderRows = () => {
-    const { Row, Cell } = Table;
-    return Object.values(this.state.milestones).map((milestone, index) => {
-      return (
-
-        <Row
-          disabled={!milestone.acceptingVotes}
-          // positive={!milestone.acceptingVotes}
-        >
-          <Cell>{index + 1}</Cell>
-        <Cell>{milestone.name}</Cell>
-          <Cell>{milestone.description}</Cell>
-          <Cell>
-            {milestone.passingVotes / (milestone.passingVotes + milestone.failingVotes) ?
-              milestone.passingVotes / (milestone.passingVotes + milestone.failingVotes) : 'N/A'
-            }
-          </Cell>
-          <Cell>
-            {milestone.acceptingVotes ? (
-              <Button color="green" basic onClick={this.onPass}>
-                Meets Milestone
-              </Button>
-            ) : null}
-          </Cell>
-          <Cell>
-            {milestone.acceptingVotes ? (
-              <Button color="red" basic onClick={this.onFail}>
-                Fails Milestone
-              </Button>
-            ) : null}
-          </Cell>
-        </Row>
-      );
-    });
-
-  }
 
 
   render() {
@@ -228,22 +183,7 @@ class FundShow extends Component {
             </Link>
           </div>
 
-          <h4>Current Milestones</h4>
-          {/* <MilestoneTable/> */}
 
-          <Table>
-            <Header>
-              <Row>
-                <HeaderCell>#</HeaderCell>
-                <HeaderCell>Title</HeaderCell>
-                <HeaderCell>Description</HeaderCell>
-                <HeaderCell>Pass Rate</HeaderCell>
-                <HeaderCell>Meets Milestone</HeaderCell>
-                <HeaderCell>Fails Milestone</HeaderCell>
-              </Row>
-            </Header>
-            <Body>{this.renderRows()}</Body>
-          </Table>
 
           <h3>Step 5: Next Milestone</h3>
           <p>
