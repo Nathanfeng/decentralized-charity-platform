@@ -8,9 +8,9 @@ import Web3Container from '../lib/Web3Container';
 class FundNew extends Component {
   state = {
     name: "",
-    descrip: "",
-    target: "",
-    minDonors: "",
+    description: "",
+    targetAmount: "",
+    minNumberDonators: "",
     errorMessage: "",
     loading: false
   };
@@ -18,15 +18,15 @@ class FundNew extends Component {
   onSubmit = async (event) => {
     event.preventDefault();
     this.setState({ loading: true, errorMessage: ""});
-    const {name, descrip, target, minDonors} = this.state;
+    const {name, descrip, targetAmount, minNumberDonators} = this.state;
 
     try {
     const {accounts, fundContract} = this.props;
     await fundContract.methods.initializeFund(
       name,
-      descrip,
-      target,
-      minDonors
+      description,
+      targetAmount,
+      minNumberDonators
     )
       .send({
         from:accounts[0]
@@ -48,9 +48,9 @@ class FundNew extends Component {
         <Form.Field>
           <label>Name of Fund</label>
           <Input
-            value={this.state.title}
+            value={this.state.name}
             onChange={event =>
-              this.setState({ title: event.target.value })}
+              this.setState({ name: event.target.value })}
             />
         </Form.Field>
 

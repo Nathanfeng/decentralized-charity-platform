@@ -13,12 +13,24 @@ class FundShow extends Component {
 
   state = {
     errorMessage: "",
-    loading: false
+    loading: false,
+    manager:"",
+    totalDonors:"",
+    minNumberDonators:"",
+    totalDonated:"",
+    targetAmount:"",
+    acceptingDonations:"",
+    active:"",
+    accounts:"",
+    fundContract:"",
+    milestoneCount: "",
+    milestones: ""
   };
 
-  static async getInitialProps(props) {
+  componentDidMount = async () => {
     const {accounts, fundContract} = this.props;
     const milestoneCount = await fundContract.methods.getMilestonesCount().call();
+    const summary = await fundContract.methods.fundSummary().call();
     const milestones = await Promise.all(
       Array(parseInt(milestoneCount))
         .fill()
@@ -26,22 +38,23 @@ class FundShow extends Component {
           return fundContract.methods.milestones(index).call();
         })
     );
-    const summary = await fundContract.methods.fundSummary().call();
-    return {
-      address: summary[0],
+    console.log(milestones);
+    this.setState({
+      manager: summary[0],
       totalDonors: summary[1],
       minNumberDonators: summary[2],
       totalDonated: summary[3],
       targetAmount: summary[4],
-      acceptingDonations: summary[5],
-      active: summary[6],
+      acceptingDonations: summary[5].toString(),
+      active: summary[6].toString(),
       title: summary[7],
       description: summary[8],
       milestones,
       milestoneCount,
       fundContract,
       accounts
-    };
+    });
+
   }
 
   renderCards() {
@@ -56,7 +69,7 @@ class FundShow extends Component {
       accounts,
       fundContract,
       milestoneCount
-    } = this.props;
+    } = this.state;
 
 
     const items = [
@@ -143,34 +156,34 @@ class FundShow extends Component {
 
   renderRows = () => {
     const { Row, Cell } = Table;
-    const {accounts, fundContract, milestones} = this.props;
-
-    return this.props.milestones.map((milestone, index) => {
+    return Object.values(this.state.milestones).map((milestone, index) => {
       return (
 
         <Row
-          disabled={milestone.acceptingVotes}
-          positive={!milestone.acceptingVotes}
+          disabled={!milestone.acceptingVotes}
+          // positive={!milestone.acceptingVotes}
         >
-          <Cell>0</Cell>
-          <Cell>{milestone.title}</Cell>
+          <Cell>{index + 1}</Cell>
+        <Cell>{milestone.name}</Cell>
           <Cell>{milestone.description}</Cell>
           <Cell>
-            {milestone.passingVotes / (milestone.passingVotes + milestone.failingVotes)}
+            {milestone.passingVotes / (milestone.passingVotes + milestone.failingVotes) ?
+              milestone.passingVotes / (milestone.passingVotes + milestone.failingVotes) : 'N/A'
+            }
           </Cell>
           <Cell>
-            {milestone.acceptingVotes ? null : (
+            {milestone.acceptingVotes ? (
               <Button color="green" basic onClick={this.onPass}>
                 Meets Milestone
               </Button>
-            )}
+            ) : null}
           </Cell>
           <Cell>
-            {milestone.acceptingVotes ? null : (
+            {milestone.acceptingVotes ? (
               <Button color="red" basic onClick={this.onFail}>
                 Fails Milestone
               </Button>
-            )}
+            ) : null}
           </Cell>
         </Row>
       );
@@ -221,7 +234,7 @@ class FundShow extends Component {
           <Table>
             <Header>
               <Row>
-                <HeaderCell>ID</HeaderCell>
+                <HeaderCell>#</HeaderCell>
                 <HeaderCell>Title</HeaderCell>
                 <HeaderCell>Description</HeaderCell>
                 <HeaderCell>Pass Rate</HeaderCell>
@@ -229,7 +242,7 @@ class FundShow extends Component {
                 <HeaderCell>Fails Milestone</HeaderCell>
               </Row>
             </Header>
-            {/* <Body>{this.renderRows()}</Body> */}
+            <Body>{this.renderRows()}</Body>
           </Table>
 
           <h3>Step 5: Next Milestone</h3>

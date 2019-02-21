@@ -117,26 +117,26 @@ contract Fund is Ownable, Pausable {
 
 	/**
 	 * @dev Sets the requirements of the fund
-	 * @param name The name of the fund
-	 * @param descrip The description of the goals of the fund
-	 * @param target The target amount the fund needs to raise to be deployed
-	 * @param minDonors The min number of donors for the fund to be deployed
+	 * @param _title The name of the fund
+	 * @param _description The description of the goals of the fund
+	 * @param _targetAmount The target amount the fund needs to raise to be deployed
+	 * @param _minNumberDonators The min number of donors for the fund to be deployed
 	 */
 
 	function initializeFund(
-		string name,
-		string descrip,
-		uint target,
-		uint minDonors
+		string _title,
+		string _description,
+		uint _targetAmount,
+		uint _minNumberDonators
 		)
 		public
 		onlyOwner
 		{
 		require(!fundInitialized);
-		title = name;
-		description = descrip;
-		targetAmount = target;
-		minNumberDonators = minDonors;
+		title = _title;
+		description = _description;
+		targetAmount = _targetAmount;
+		minNumberDonators = _minNumberDonators;
 		fundInitialized = true;
 		emit FundInitialized(msg.sender, title, description, targetAmount, minNumberDonators);
 	}
