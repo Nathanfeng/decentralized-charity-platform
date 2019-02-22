@@ -6,9 +6,8 @@ import ContributeForm from "../components/ContributeForm";
 import { Link } from '../routes';
 import Web3Container from '../lib/Web3Container';
 import MilestoneTable from "../components/MilestoneTable"
-// import RequestRow from '../components/RequestRow';
 
-class FundShow extends Component {
+class ShowDonor extends Component {
 
   state = {
     errorMessage: "",
@@ -20,8 +19,8 @@ class FundShow extends Component {
     targetAmount:"",
     acceptingDonations:"",
     active:"",
-    accounts:"",
-    fundContract:"",
+    title:"",
+    description:'',
     milestoneCount: "",
     milestones: ""
   };
@@ -43,14 +42,12 @@ class FundShow extends Component {
       minNumberDonators: summary[2],
       totalDonated: summary[3],
       targetAmount: summary[4],
-      acceptingDonations: summary[5].toString(),
+      acceptingDonations: summary[5],
       active: summary[6].toString(),
       title: summary[7],
       description: summary[8],
       milestones,
-      milestoneCount,
-      fundContract,
-      accounts
+      milestoneCount
     });
 
   }
@@ -145,18 +142,18 @@ class FundShow extends Component {
     },
     {
       header: totalDonated,
-      meta: 'Total Donated',
+      meta: 'Total Donated in Wei',
       description:
-        'The total amount donated to the fund so far'
+        'The total amount donated to the fund so far in Wei'
     },
     {
       header: targetAmount,
-      meta: 'Target Amount',
+      meta: 'Target Amount in Wei',
       description:
-        'This is the minimum amount that the fund is hoping to raise'
+        'This is the minimum amount that the fund is hoping to raise in Wei'
     },
     {
-      header: acceptingDonations,
+      header: acceptingDonations.toString(),
       meta: 'Accepting Donations',
       description:
         'Whether you can donate to the fund'
@@ -192,14 +189,15 @@ class FundShow extends Component {
 
   render() {
     const { Header, Row, HeaderCell, Body } = Table;
+    const {title, description, acceptingDonations} = this.state;
       return (
 
         <Layout>
-          <h2>{this.props.title}</h2>
-          <p>{this.props.description}</p>
-        <h3>
+          <h2>{title}</h2>
+          <p>{description}</p>
+        <h4>
             Fund Details
-        </h3>
+        </h4>
           {this.renderCards()}
 
           <h3>Current Milestones</h3>
@@ -217,20 +215,18 @@ class FundShow extends Component {
             <Body>{this.renderRows()}</Body>
           </Table>
 
-          <h3>Donate to this Fund</h3>
-          <p>
-            When the status of the fund is "Accepting Donations" you can
-            donate to this fund
-          </p>
-          <ContributeForm />
-
-          <Link route={`/showManager`} style={{marginTop: "30px"}}>
-             <a>Click here to view the fund details as a fund manager</a>
-          </Link>
-
-
-
-
+          {
+            acceptingDonations && (
+              <div>
+                <h3>Donate to this Fund</h3>
+                <p>
+                  When the status of the fund is "Accepting Donations" you can
+                  donate to this fund
+                </p>
+                <ContributeForm />
+              </div>
+            )
+          }
 
           <h3>Claim Funds</h3>
           <p>
@@ -263,7 +259,7 @@ export default () => (
   <Web3Container
     renderLoading={() => <div>Loading Page...</div>}
     render={({ web3, accounts, fundContract }) => (
-      <FundShow
+      <ShowDonor
         web3={web3}
         accounts={accounts}
         fundContract={fundContract}

@@ -25,7 +25,12 @@ class NewMilestone extends Component {
       await fundContract.methods
         .addMilestone(title, description)
         .send({ from: accounts[0] });
-
+        
+      this.setState({
+        addErrorMessage: "",
+        title: "",
+        description: ""
+       });
       Router.pushRoute("/milestones");
     } catch (err) {
       this.setState({ addErrorMessage: err.message });

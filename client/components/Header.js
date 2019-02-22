@@ -20,6 +20,16 @@ export default () => (
                 Raise a Fund
               </a>
             </Link>
+            <Link route="/showManager">
+              <a className="item">
+                Fund Managers
+              </a>
+            </Link>
+            <Link route="/showDonor">
+              <a className="item">
+                Donors
+              </a>
+            </Link>
             <Menu.Menu position="right">
               <a className="item">
                 Current Account: {accounts[0]}

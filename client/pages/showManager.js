@@ -6,10 +6,9 @@ import ContributeForm from "../components/ContributeForm";
 import { Link } from '../routes';
 import Web3Container from '../lib/Web3Container';
 import MilestoneTable from "../components/MilestoneTable"
-// import RequestRow from '../components/RequestRow';
 
 
-class FundShow extends Component {
+class ShowManager extends Component {
 
   state = {
     errorMessage: "",
@@ -21,8 +20,8 @@ class FundShow extends Component {
     targetAmount:"",
     acceptingDonations:"",
     active:"",
-    accounts:"",
-    fundContract:"",
+    title:"",
+    description:"",
     milestoneCount: "",
     milestones: ""
   };
@@ -38,7 +37,7 @@ class FundShow extends Component {
       totalDonated: summary[3],
       targetAmount: summary[4],
       acceptingDonations: summary[5].toString(),
-      active: summary[6].toString(),
+      active: summary[6],
       title: summary[7],
       description: summary[8],
       milestoneCount,
@@ -85,13 +84,13 @@ class FundShow extends Component {
     },
     {
       header: totalDonated,
-      meta: 'Total Donated',
+      meta: 'Total Donated in Wei',
       description:
         'The total amount donated to the fund so far'
     },
     {
       header: targetAmount,
-      meta: 'Target Amount',
+      meta: 'Target Amount in Wei',
       description:
         'This is the minimum amount that the fund is hoping to raise'
     },
@@ -99,10 +98,10 @@ class FundShow extends Component {
       header: acceptingDonations,
       meta: 'Accepting Donations',
       description:
-        'Number of people who have already donated to this fund'
+        'Number of people who have already donated to this fund in Wei'
     },
     {
-      header: active,
+      header: active.toString(),
       meta: 'Fund Acive',
       description:
         'Whether the fund has been activated by the fund manager'
@@ -149,41 +148,40 @@ class FundShow extends Component {
 
   render() {
     const { Header, Row, HeaderCell, Body } = Table;
+    const {title, description, active} = this.state;
       return (
 
         <Layout>
-          <h2>{this.props.title}</h2>
-          <p>{this.props.description}</p>
+          <h2>{title}</h2>
+          <p>{description}</p>
           <h4>
             Fund Stats
           </h4>
           {this.renderCards()}
 
-        <h3>Step 4: Activate Fund </h3>
-          <p>
-            Once the minimum number of donors and target amount has been
-            raised, the fundManager can activate the fund, which pays out the
-            first installment of the donations.
-          </p>
+          {
+            !active && (
+              <div>
+                <h3>Step 4: Activate Fund </h3>
+                  <p>
+                    Once the minimum number of donors and target amount has been
+                    raised, the fundManager can activate the fund, which pays out the
+                    first installment of the donations.
+                  </p>
 
-          <Form
-            onSubmit={this.onActivate}
-            error={!!this.state.errorMessage}
-          >
-            <Button
-              primary
-            >
-              Activate Fund
-            </Button>
-          </Form>
-
-          <div style={{ marginBottom: "30px"}}>
-            <Link route={`/showDonor`}>
-               <a>Click here to view the fund details as a donor </a>
-            </Link>
-          </div>
-
-
+                  <Form
+                    onSubmit={this.onActivate}
+                    error={!!this.state.errorMessage}
+                  >
+                    <Button
+                      primary
+                    >
+                      Activate Fund
+                    </Button>
+                  </Form>
+              </div>
+            )
+          }
 
           <h3>Step 5: Next Milestone</h3>
           <p>
@@ -207,7 +205,7 @@ export default () => (
   <Web3Container
     renderLoading={() => <div>Loading Page...</div>}
     render={({ web3, accounts, fundContract }) => (
-      <FundShow
+      <ShowManager
         web3={web3}
         accounts={accounts}
         fundContract={fundContract}
