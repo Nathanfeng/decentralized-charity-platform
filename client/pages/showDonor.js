@@ -22,7 +22,8 @@ class ShowDonor extends Component {
     title:"",
     description:'',
     milestoneCount: "",
-    milestones: ""
+    milestones: "",
+    currentMilestone: ""
   };
 
   componentDidMount = async () => {
@@ -36,6 +37,9 @@ class ShowDonor extends Component {
           return fundContract.methods.milestones(index).call();
         })
     );
+    let currentMilestone = milestones.filter((milestone) => milestone.acceptingVotes)[0];
+    if(!currentMilestone){currentMilestone = ''};
+    console.log(currentMilestone);
     this.setState({
       manager: summary[0],
       totalDonors: summary[1],
@@ -47,13 +51,15 @@ class ShowDonor extends Component {
       title: summary[7],
       description: summary[8],
       milestones,
-      milestoneCount
+      milestoneCount,
+      currentMilestone
     });
 
   }
 
   renderRows = () => {
     const { Row, Cell } = Table;
+    console.log(this.state.milestones)
     return Object.values(this.state.milestones).map((milestone, index) => {
       return (
 
@@ -63,10 +69,11 @@ class ShowDonor extends Component {
         >
           <Cell>{index + 1}</Cell>
         <Cell>{milestone.name}</Cell>
-          <Cell>{milestone.description}</Cell>
+        <Cell>{milestone.description}</Cell>
+        <Cell>{milestone.totalVoted}</Cell>
           <Cell>
-            {milestone.passingVotes / (milestone.passingVotes + milestone.failingVotes) ?
-              milestone.passingVotes / (milestone.passingVotes + milestone.failingVotes) : 'N/A'
+            {parseInt(milestone.passingVotes) / (parseInt(milestone.passingVotes) + parseInt(milestone.failingVotes)) ?
+              Math.round(parseInt(milestone.passingVotes) / (parseInt(milestone.passingVotes) + parseInt(milestone.failingVotes)) * 100) + ' %' : 'N/A'
             }
           </Cell>
           <Cell>
@@ -189,7 +196,7 @@ class ShowDonor extends Component {
 
   render() {
     const { Header, Row, HeaderCell, Body } = Table;
-    const {title, description, acceptingDonations} = this.state;
+    const {title, description, acceptingDonations, totalDonors, currentMilestone} = this.state;
       return (
 
         <Layout>
@@ -207,6 +214,7 @@ class ShowDonor extends Component {
                 <HeaderCell>#</HeaderCell>
                 <HeaderCell>Title</HeaderCell>
                 <HeaderCell>Description</HeaderCell>
+                <HeaderCell>Total Votes</HeaderCell>
                 <HeaderCell>Pass Rate</HeaderCell>
                 <HeaderCell>Meets Milestone</HeaderCell>
                 <HeaderCell>Fails Milestone</HeaderCell>
@@ -228,27 +236,38 @@ class ShowDonor extends Component {
             )
           }
 
-          <h3>Claim Funds</h3>
-          <p>
-            Once the the donors vote and pass the milestone, the manager of
-            the fund can move the fund on to the next milestone. Moving to the
-            next milestone will pay the fund the next installment and open up voting
-            on the next milestone.
-          </p>
-          <p>
-            If the donors vote that the charity did not complete the milestone,
-            then they have the option to claim their funds. When donors claim funds,
-            they will be refunded the proportion that they had donated to the fund from
-            the remaining funds.
-          </p>
+          {currentMilestone !== "" &&
+          (parseInt(currentMilestone.totalVoted) > Math.floor(totalDonors/2) &&
+            parseInt(currentMilestone.passingVotes) / (parseInt(currentMilestone.passingVotes) + parseInt(currentMilestone.failingVotes) < 0.5)) &&
+            (
+              <div>
+                <h3>Claim Funds</h3>
+                <p>
+                  Once the the donors vote and pass the milestone, the manager of
+                  the fund can move the fund on to the next milestone. Moving to the
+                  next milestone will pay the fund the next installment and open up voting
+                  on the next milestone.
+                </p>
+                <p>
+                  If the donors vote that the charity did not complete the milestone,
+                  then they have the option to claim their funds. When donors claim funds,
+                  they will be refunded the proportion that they had donated to the fund from
+                  the remaining funds.
+                </p>
 
-          <Form
-            style={{ marginBottom: "30px"}}
-            onSubmit={this.onClaim}
-            error={!!this.state.errorMessage}
-          >
-            <Button primary>Claim Funds </Button>
-          </Form>
+                <Form
+                  style={{ marginBottom: "30px"}}
+                  onSubmit={this.onClaim}
+                  error={!!this.state.errorMessage}
+                >
+                  <Button primary>Claim Funds </Button>
+                </Form>
+              </div>
+
+            )
+          }
+
+
 
         </Layout>
       );

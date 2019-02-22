@@ -25,7 +25,7 @@ class NewMilestone extends Component {
       await fundContract.methods
         .addMilestone(title, description)
         .send({ from: accounts[0] });
-        
+
       this.setState({
         addErrorMessage: "",
         title: "",
@@ -96,20 +96,6 @@ class NewMilestone extends Component {
           </Form.Field>
           <Button loading ={this.state.loading} primary>Add Milestone</Button>
         </Form>
-
-        <h3>All Milestones</h3>
-        <Table>
-          <Header>
-            <Row>
-              <HeaderCell>ID</HeaderCell>
-              <HeaderCell>Title</HeaderCell>
-              <HeaderCell>Description</HeaderCell>
-              <HeaderCell>Pass Rate</HeaderCell>
-              <HeaderCell >Meets Milestone</HeaderCell>
-            </Row>
-          </Header>
-          {/* <Body>{this.renderRows()}</Body> */}
-        </Table>
 
         <h3 style={{marginTop: "40px"}}>Step3: Deploy the Fund </h3>
         <p>
