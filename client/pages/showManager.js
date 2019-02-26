@@ -22,6 +22,7 @@ class ShowManager extends Component {
     active:"",
     title:"",
     description:"",
+    currentMilestone: "",
     milestoneCount: "",
     milestones: ""
   };
@@ -30,6 +31,19 @@ class ShowManager extends Component {
     const {accounts, fundContract} = this.props;
     const milestoneCount = await fundContract.methods.getMilestonesCount().call();
     const summary = await fundContract.methods.fundSummary().call();
+    const milestones = await Promise.all(
+      Array(parseInt(milestoneCount))
+        .fill()
+        .map((element, index) => {
+          return fundContract.methods.milestones(index).call();
+        })
+    );
+    let currentMilestone = milestones.filter((milestone) => milestone.acceptingVotes)[0];
+    let active = summary[6].toString();
+    if(!currentMilestone){
+      currentMilestone = '';
+      active = 'false'
+    };
     this.setState({
       manager: summary[0],
       totalDonors: summary[1],
@@ -37,9 +51,10 @@ class ShowManager extends Component {
       totalDonated: summary[3],
       targetAmount: summary[4],
       acceptingDonations: summary[5].toString(),
-      active: summary[6],
       title: summary[7],
       description: summary[8],
+      active,
+      currentMilestone,
       milestoneCount,
       fundContract,
       accounts
@@ -58,7 +73,8 @@ class ShowManager extends Component {
       active,
       accounts,
       fundContract,
-      milestoneCount
+      milestoneCount,
+      currentMilestone
     } = this.state;
 
 
@@ -69,6 +85,18 @@ class ShowManager extends Component {
         description: "Manager that created this fund",
         style: { overflowWrap: "break-word"}
       },
+      {
+      header: currentMilestone,
+      meta: 'Current Milestone',
+      description:
+        'This is the current milestone that the fund manager is working towards'
+    },
+      {
+      header: milestoneCount,
+      meta: 'Number of Milestones',
+      description:
+        'This is the total number of milestones that have been set by the Manager'
+    },
 
       {
       header: totalDonors,
@@ -148,7 +176,7 @@ class ShowManager extends Component {
 
   render() {
     const { Header, Row, HeaderCell, Body } = Table;
-    const {title, description, active} = this.state;
+    const {title, description, active, currentMilestone} = this.state;
       return (
 
         <Layout>
@@ -182,19 +210,25 @@ class ShowManager extends Component {
               </div>
             )
           }
+          {
+            currentMilestone && (
+              <div>
+                <h3>Step 5: Next Milestone</h3>
+                <p>
+                  Once you've exhausted your funds or have achieved your milestone, send a report to donors on your progress. This will allow them to vote on whether you've achieved those milestones. Once the the donors vote and pass the milestone, you can move the fund on to the next milestone by clicking below. Moving to the next milestone will pay the fund manager the next installment and open up voting on the next milestone.
+                </p>
 
-          <h3>Step 5: Next Milestone</h3>
-          <p>
-            Once you've exhausted your funds or have achieved your milestone, send a report to donors on your progress. This will allow them to vote on whether you've achieved those milestones. Once the the donors vote and pass the milestone, you can move the fund on to the next milestone by clicking below. Moving to the next milestone will pay the fund manager the next installment and open up voting on the next milestone.
-          </p>
+                <Form
+                  style={{ marginBottom: "30px"}}
+                  onSubmit={this.onNextMilestone}
+                  error={!!this.state.errorMessage}
+                  >
+                    <Button primary>Next Milestone</Button>
+                </Form>
+              </div>
+            )
+          }
 
-          <Form
-            style={{ marginBottom: "30px"}}
-            onSubmit={this.onNextMilestone}
-            error={!!this.state.errorMessage}
-          >
-            <Button primary>Next Milestone</Button>
-          </Form>
 
         </Layout>
       );

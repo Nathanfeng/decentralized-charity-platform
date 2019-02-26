@@ -10,7 +10,7 @@ export default () => (
         <div style={{marginBottom: "30px", marginWidth: '50px'}}>
           <div className="ui secondary pointing menu">
             <Link route="/">
-            <a className="active item">
+            <a className="item">
               Home
             </a>
             </Link>

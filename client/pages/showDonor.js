@@ -38,7 +38,11 @@ class ShowDonor extends Component {
         })
     );
     let currentMilestone = milestones.filter((milestone) => milestone.acceptingVotes)[0];
-    if(!currentMilestone){currentMilestone = ''};
+    let active = summary[6].toString();
+    if(!currentMilestone){
+      currentMilestone = '';
+      active = 'false'
+    };
     console.log(currentMilestone);
     this.setState({
       manager: summary[0],
@@ -47,9 +51,9 @@ class ShowDonor extends Component {
       totalDonated: summary[3],
       targetAmount: summary[4],
       acceptingDonations: summary[5],
-      active: summary[6].toString(),
       title: summary[7],
       description: summary[8],
+      active,
       milestones,
       milestoneCount,
       currentMilestone
@@ -123,7 +127,8 @@ class ShowDonor extends Component {
       fundContract,
       title,
       description,
-      milestoneCount
+      milestoneCount,
+      currentMilestone
     } = this.state;
 
 
@@ -134,7 +139,18 @@ class ShowDonor extends Component {
         description: "Manager that created this fund",
         style: { overflowWrap: "break-word"}
       },
-
+      {
+      header: currentMilestone,
+      meta: 'Current Milestone',
+      description:
+        'This is the current milestone that the fund manager is working towards'
+    },
+      {
+      header: milestoneCount,
+      meta: 'Number of Milestones',
+      description:
+        'This is the total number of milestones that have been set by the Manager'
+    },
       {
       header: totalDonors,
       meta: 'Total Donors',
